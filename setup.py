@@ -4,6 +4,7 @@ from setuptools import setup
 REQUIREMENTS = []
 
 DEV_REQUIREMENTS = [
+    "PyYAML",
     "pre-commit",
     "black",
     "flake8",
