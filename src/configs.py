@@ -50,6 +50,11 @@ def get_config(config_name: str) -> Any:
         If configuration name not found in configurations.yaml file.
     """
     cfgs_dict: dict = load_yaml()
+
+    if "." in config_name:
+        config_name_list: list = config_name.split(".")
+        return cfgs_dict[config_name_list[0]][config_name_list[-1]]
+
     if config_name not in cfgs_dict:
         raise KeyError(f"Configuration name {config_name} not found in configurations.yaml file")
 
