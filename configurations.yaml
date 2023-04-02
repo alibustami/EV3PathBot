@@ -1,0 +1,21 @@
+robot dimensions:
+  # length and with on Studs
+  length:
+  width:
+
+  # wheel diameter in mm
+  wheel diameter:
+
+robot motors:
+  # one of (MEDIUM, LARGE)
+  port A:
+  port B:
+  port C:
+  port D:
+
+robot sensors:
+  # one of (GYRO, COLOR)
+  port 1:
+  port 2:
+  port 3:
+  port 4:
