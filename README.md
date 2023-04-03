@@ -30,7 +30,7 @@ $ make install
 
 run these commands in `git bash`:
 ```
-$ cmake --build . --target virenv
+$ conda env create -f environment.yaml
 ```
 
 then activate the virtual environment
@@ -40,5 +40,5 @@ $ conda activate ev3pathbot-env
 
 #### Install & build the package:
 ```
-$ cmake --build . --target install
+$ ./install.bat
 ```
