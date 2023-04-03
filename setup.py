@@ -13,10 +13,7 @@ DEV_REQUIREMENTS = [
     "pep8-naming",
 ]
 
-TEST_PACKAGES = [
-    "pytest",
-    "pytest-cov",
-]
+TEST_PACKAGES = ["unittest"]
 
 setup(
     name="EV3PathBOT",
