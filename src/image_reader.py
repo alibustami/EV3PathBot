@@ -5,8 +5,8 @@ import cv2 as cv
 import numpy as np
 
 
-def img_reading(path: str) -> int:
-    """Read the image.
+def image_validation(path: str) -> np.ndarray:
+    """Validate the image.
 
     Parameters
     ----------
@@ -15,18 +15,21 @@ def img_reading(path: str) -> int:
 
     Returns
     -------
-    int
-        counter
+    np.ndarray
+        image extracted from path
+
+    Raises
+    ------
+    FileExistsError
+        when path is not for a image file
+    TypeError
+        when the image is not readable
     """
-    img = cv.imread(path)
+    if not os.path.isfile(path):
+        raise FileExistsError(f"No image file found at {path}")
 
-    counter = 0
-    if os.path.exists(path):
-        counter += 1
-
-    if img is not None:
-        counter += 1
-    return counter
-
-
-print(img_reading(r"C:\Users\walee\Desktop\project\robot1.png"))
+    try:
+        img: np.ndarray = cv.imread(path)
+    except Exception:
+        raise TypeError("image not readable")
+    return img
