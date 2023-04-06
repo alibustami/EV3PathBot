@@ -4,7 +4,7 @@ import unittest
 
 import cv2 as cv
 import numpy as np
-import numpy.tests as npt
+import numpy.testing as npt
 
 from src import image_reader
 
