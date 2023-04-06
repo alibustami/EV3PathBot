@@ -1,7 +1,7 @@
 """This module contains the package information."""
 from setuptools import setup
 
-REQUIREMENTS = ["opencv-python", "numpy"]
+REQUIREMENTS = ["opencv-contrib-python", "numpy"]
 
 DEV_REQUIREMENTS = [
     "PyYAML",
@@ -21,7 +21,7 @@ setup(
     description="Control Lego Mindstorms EV3 robot, by drawing a path on an image",
     author=["Ali Albustami", "Waleed Abublan", "Hazem Albtoush"],
     author_email=["alialbustami@gmail.com", "waleedabublan@gmail.com", "hazem.albtoush@gmail.com"],
-    python_requires="==3.8.13",
+    python_requires=">=3.8",
     packages=["src"],
     install_requires=REQUIREMENTS + DEV_REQUIREMENTS,
     extras_require={
