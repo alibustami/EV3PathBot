@@ -11,7 +11,6 @@ logging.basicConfig(
     filename="logs.log",
     filemode="w",
 )
-pid_constant = namedtuple("constant", ["value"])
 
 
 def gyro_pid_control(
@@ -19,7 +18,7 @@ def gyro_pid_control(
     current_angle: Union[int, float],
     constants: Optional[Tuple[float]] = None,
     accepted_error: Optional[float] = None,
-    termination_condition: Optional[str] = None,
+    termination_condition: Optional[Tuple[str, Union[float, int]]] = None,
 ):
     """PID control using the gyro sensor.
 
@@ -33,8 +32,8 @@ def gyro_pid_control(
         constants of the PID controller (kp, ki, kd), by default None
     accepted_error : Optional[float], optional
         accepted error, by default None
-    termination_condition : Optional[str], optional
-        termination condition, by default None
+    termination_condition : Optional[Tuple[str, Union[float, int]]], optional
+        termination condition as a tuple (name: str, value: int or float), by default None
 
     Raises
     ------
@@ -44,6 +43,8 @@ def gyro_pid_control(
         * if no termination condition is set in the config file
         * if the termination condition is invalid (not one of the following: max_time, max_iterations, max_convergence_loop)
     """
+    pid_constant = namedtuple("constant", ["value"])
+    terminator = namedtuple("terminator", ["name", "value"])
     # get constants with validation
     if accepted_error:
         logging.warning("it's better to set the accepted error in the config file")
@@ -55,7 +56,9 @@ def gyro_pid_control(
     if constants:
         (kp, ki, kd) = constants
         logging.warning("it's better to set the constants in the config file")
-        logging.info(f"kp: {kp}, ki: {ki}, kd: {kd}")
+        logging.info(
+            f"kp: {kp}, ki: {ki}, kd: {kd}, accepted_error: {accepted_error.value} from function arguments"
+        )
     else:
         (kp, ki, kd) = (
             float(get_config("pid_constants.kp")),
@@ -65,7 +68,9 @@ def gyro_pid_control(
         if any(value is None for value in [kp, ki, kd]):
             logging.error("No constants are set")
             raise ValueError("No constants are set")
-        logging.info(f"kp: {kp}, ki: {ki}, kd: {kd}")
+        logging.info(
+            f"kp: {kp}, ki: {ki}, kd: {kd}, accepted_error: {accepted_error.value} form config file"
+        )
     kp: namedtuple = pid_constant(kp)
     ki: namedtuple = pid_constant(ki)
     kd: namedtuple = pid_constant(kd)
@@ -75,10 +80,16 @@ def gyro_pid_control(
 
     if termination_condition:
         logging.warning("it's better to set the termination condition in the config file")
-        if termination_condition in terminiation_condition_list:
-            termination: str = termination_condition
+        if termination_condition[0] in terminiation_condition_list:
+            termination_name: str = termination_condition[0]
+            termination_value: Union[float, int] = termination_condition[1]
+            termination: str = termination_name
+            terminator: namedtuple = terminator(termination_name, termination_value)
+            logging.info(
+                f"termination condition is set to '{termination_name}' with value '{termination_value}' from function arguments"
+            )
         else:
-            message: str = f"Invalid termination condition expected one of {terminiation_condition_list} got '{termination_condition}'"
+            message: str = f"Invalid termination condition expected one of {terminiation_condition_list} got '{termination_condition[0]}'"
             logging.error(message)
             raise ValueError(message)
     else:
@@ -88,7 +99,12 @@ def gyro_pid_control(
         ]
         if len(termination) == 1:
             termination, *_ = termination
-            logging.info(f"termination condition is set to '{termination}'")
+            terminator: namedtuple = terminator(
+                termination, termination_condition_dict[termination]
+            )
+            logging.info(
+                f"termination condition is set to '{termination}' with value '{termination_condition_dict[termination]}' from config file"
+            )
         elif len(termination) > 1:
             logging.warning(
                 f"more than one termination condition is set, the first one will be used which is {termination[0]}"
