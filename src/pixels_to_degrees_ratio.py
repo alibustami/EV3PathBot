@@ -23,8 +23,12 @@ def convert_pixels_to_degrees(
     List[int]
         the degrees the robot should move
     """
-    img_scale: float = img.shape[1] / 236.2
-    wheel_scale: float = (wheel_diameter * 3.14) / 360
+    img_scale: float = (
+        img.shape[1] / 236.2
+    )  # this equation for calculating the length of the table in cm
+    wheel_scale: float = (
+        wheel_diameter * 3.14
+    ) / 360  # this equation is for calculating how many cm does 1 wheel rotation make
     degrees_list: list = []
     for distance in distance_list:
         degrees_list.append(round((distance / img_scale) / wheel_scale))
