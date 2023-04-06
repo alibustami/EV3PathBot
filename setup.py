@@ -1,7 +1,7 @@
 """This module contains the package information."""
 from setuptools import setup
 
-REQUIREMENTS = []
+REQUIREMENTS = ["numpy"]
 
 DEV_REQUIREMENTS = [
     "PyYAML",
