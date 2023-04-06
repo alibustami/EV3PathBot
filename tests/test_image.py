@@ -16,4 +16,4 @@ class TestImage(unittest.TestCase):
         """This function contains tests for image reading."""
         path = os.path.join("tests", "fixtures", "cargo1.jpg")
         img: np.ndarray = cv.imread(path)
-        npt.assert_errey_equal(img, image_reader.image_validation(path))
+        npt.assert_array_equal(img, image_reader.image_validation(path))
