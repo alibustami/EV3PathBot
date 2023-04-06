@@ -8,13 +8,7 @@ from src.pixels_to_degrees_ratio import convert_pixels_to_degrees
 
 
 class TestConvertPixelsToDegrees(unittest.TestCase):
-    """This class defines a unit test for the convert_pixels_to_degrees function.
-
-    Parameters
-    ----------
-    unittest : TestCase
-        A subclass of unittest.TestCase that defines the individual unit tests.
-    """
+    """This class defines a unit test for the convert_pixels_to_degrees function."""
 
     def test_convert_pixels_to_degrees(self):
         """Test the converter."""
