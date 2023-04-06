@@ -78,12 +78,9 @@ def gyro_pid_control(
         if termination_condition in terminiation_condition_list:
             termination: str = termination_condition
         else:
-            logging.error(
-                f"Invalid termination condition expected one of {terminiation_condition_list} got '{termination_condition}'"
-            )
-            raise ValueError(
-                f"Invalid termination condition expected one of {terminiation_condition_list} got '{termination_condition}'"
-            )
+            message: str = f"Invalid termination condition expected one of {terminiation_condition_list} got '{termination_condition}'"
+            logging.error(message)
+            raise ValueError(message)
     else:
         termination_condition_dict: dict = get_config("pid_termination_conditions")
         termination: str = [
