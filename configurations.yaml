@@ -13,7 +13,7 @@ robot_motors:
   port_C:
   port_D:
 
-robot sensors:
+robot_sensors:
   # one of (GYRO, COLOR)
   port_1:
   port_2:
@@ -32,3 +32,4 @@ pid_termination_conditions:
   max_iterations:
   max_time:
   max_convergence_loops:
+  degrees:

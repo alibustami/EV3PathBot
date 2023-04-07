@@ -13,27 +13,27 @@ logging.basicConfig(
 )
 
 
-def gyro_pid_control(
-    target_angle: Union[int, float],
-    current_angle: Union[int, float],
+def extract_pid_constants(
+    sensor: str,
     constants: Optional[Tuple[float]] = None,
     accepted_error: Optional[float] = None,
-    termination_condition: Optional[Tuple[str, Union[float, int]]] = None,
+    termination_condition: Optional[Tuple[str, Union[float, int]]] = ("degrees", 0),
+    sensor_port: Optional[int] = None,
 ):
     """PID control using the gyro sensor.
 
     Parameters
     ----------
-    target_angle : Union[int, float]
-        Target angle to reach
-    current_angle : Union[int, float]
-        Current angle of the robot
+    sensor : str
+        sensor name one of the following: gyro, color
     constants : Optional[Tuple[float]], optional
         constants of the PID controller (kp, ki, kd), by default None
     accepted_error : Optional[float], optional
         accepted error, by default None
     termination_condition : Optional[Tuple[str, Union[float, int]]], optional
-        termination condition as a tuple (name: str, value: int or float), by default None
+        termination condition as a tuple (name: str, value: int or float), by default degrees
+    sensor_port : Optional[int], optional
+        sensor port must be 1, 2, 3 or 4, by default None
 
     Raises
     ------
@@ -76,9 +76,14 @@ def gyro_pid_control(
     kd: namedtuple = pid_constant(kd)
 
     # get termination condition with validation
-    terminiation_condition_list: list = ["max_time", "max_iterations", "max_convergence_loop"]
+    terminiation_condition_list: list = [
+        "max_time",
+        "max_iterations",
+        "max_convergence_loop",
+        "degrees",
+    ]
 
-    if termination_condition:
+    if termination_condition[0] != "degrees":
         logging.warning("it's better to set the termination condition in the config file")
         if termination_condition[0] in terminiation_condition_list:
             termination_name: str = termination_condition[0]
@@ -113,3 +118,34 @@ def gyro_pid_control(
         elif not termination:
             logging.error("No termination condition is set")
             raise ValueError("No termination condition is set")
+
+    # get sensor port with validation
+    logging.info(f"selected sensor: {sensor}")
+    if sensor_port:
+        if sensor_port not in ["1", "2", "3", "4"]:
+            logging.error(f"Invalid sensor port, must be 1, 2, 3 or 4 got '{sensor_port}'")
+            raise ValueError("Invalid sensor port")
+        logging.warning("it's better to set the sensor port in the config file")
+        logging.info(f"sensor port: {sensor_port} from function arguments")
+    else:
+        gyro_ports_counter: int = 0
+        sensors_dict: dict = get_config("robot_sensors")
+        for key, value in sensors_dict.items():
+            if value:
+                if value.lower() == sensor.lower():
+                    sensor_port = key.split("_")[1]
+                    gyro_ports_counter += 1
+                else:
+                    logging.error(
+                        f"Invalid sensor name, expected on of [Gyro, Color] got '{value}'"
+                    )
+                    raise ValueError("Invalid sensor name")
+        if gyro_ports_counter == 0:
+            logging.error("No gyro sensor is set")
+            raise ValueError("No gyro sensor is set")
+        elif gyro_ports_counter > 1:
+            logging.warning(
+                f"more than one gyro sensor is set, the last one will be used which is {sensor_port}"
+            )
+    sensor_port: int = int(sensor_port)
+    logging.info(f"sensor port: {sensor_port} from config file")
