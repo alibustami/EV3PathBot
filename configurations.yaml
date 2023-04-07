@@ -33,3 +33,5 @@ pid_termination_conditions:
   max_time:
   max_convergence_loops:
   degrees:
+
+log_file_append: False

@@ -5,11 +5,19 @@ from typing import Optional, Tuple, Union
 
 from src.configs import get_config
 
+log_file_append = get_config("log_file_append")
+if not log_file_append:
+    log_file_append = False
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s: on file %(filename)s, on line %(lineno)d: %(message)s",
     filename="logs.log",
-    filemode="w",
+    filemode="w" if not log_file_append else "a",
+)
+
+logging.info(
+    f"logging file mode is {'append' if log_file_append else 'write'}, you can change it in the config file"
 )
 
 
@@ -50,7 +58,12 @@ def extract_pid_constants(
         logging.warning("it's better to set the accepted error in the config file")
         logging.info(f"accepted error: {accepted_error}")
     else:
-        accepted_error: float = float(get_config("pid_constants.accepted_error"))
+        accepted_error = get_config("pid_constants.accepted_error")
+        if not accepted_error:
+            logging.error("No accepted error is set")
+            raise ValueError("No accepted error is set")
+        logging.info(f"accepted error: {accepted_error}")
+        accepted_error: float = float(accepted_error)
     accepted_error: namedtuple = pid_constant(accepted_error)
 
     if constants:
@@ -61,9 +74,9 @@ def extract_pid_constants(
         )
     else:
         (kp, ki, kd) = (
-            float(get_config("pid_constants.kp")),
-            float(get_config("pid_constants.ki")),
-            float(get_config("pid_constants.kd")),
+            get_config("pid_constants.kp"),
+            get_config("pid_constants.ki"),
+            get_config("pid_constants.kd"),
         )
         if any(value is None for value in [kp, ki, kd]):
             logging.error("No constants are set")
@@ -71,6 +84,9 @@ def extract_pid_constants(
         logging.info(
             f"kp: {kp}, ki: {ki}, kd: {kd}, accepted_error: {accepted_error.value} form config file"
         )
+        kp: float = float(kp)
+        ki: float = float(ki)
+        kd: float = float(kd)
     kp: namedtuple = pid_constant(kp)
     ki: namedtuple = pid_constant(ki)
     kd: namedtuple = pid_constant(kd)
