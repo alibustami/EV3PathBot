@@ -119,7 +119,7 @@ def extract_pid_constants(
         "degrees",
     ]
 
-    if termination_condition[0] != "degrees":
+    if termination_condition[0] in terminiation_condition_list:
         logging.warning("it's better to set the termination condition in the config file")
         if termination_condition[0] in terminiation_condition_list:
             termination_name: str = termination_condition[0]
