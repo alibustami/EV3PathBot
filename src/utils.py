@@ -40,7 +40,7 @@ def extract_pid_constants(
     sensor: str,
     constants: Optional[Tuple[float]] = None,
     accepted_error: Optional[float] = None,
-    termination_condition: Optional[Tuple[str, Union[float, int]]] = ("degrees", 0),
+    termination_condition: Optional[Tuple[str, Union[float, int]]] = None,
     sensor_port: Optional[int] = None,
 ) -> PIDConfigs:
     """PID control using the gyro sensor.
@@ -119,7 +119,7 @@ def extract_pid_constants(
         "degrees",
     ]
 
-    if termination_condition[0] in terminiation_condition_list:
+    if termination_condition:
         logging.warning("it's better to set the termination condition in the config file")
         if termination_condition[0] in terminiation_condition_list:
             termination_name: str = termination_condition[0]
