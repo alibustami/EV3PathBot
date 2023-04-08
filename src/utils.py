@@ -3,6 +3,8 @@ import logging
 from collections import namedtuple
 from typing import Optional, Tuple, Union
 
+from pydantic import BaseModel
+
 from src.configs import get_config
 
 log_file_append = get_config("log_file_append")
@@ -21,13 +23,26 @@ logging.info(
 )
 
 
+class PIDConfigs(BaseModel):
+    """PIDConfigs object."""
+
+    kp: float
+    ki: float
+    kd: float
+    accepted_error: float
+    sensor: str
+    sensor_port: int
+    termination_condition: str
+    termination_value: Union[int, float]
+
+
 def extract_pid_constants(
     sensor: str,
     constants: Optional[Tuple[float]] = None,
     accepted_error: Optional[float] = None,
     termination_condition: Optional[Tuple[str, Union[float, int]]] = ("degrees", 0),
     sensor_port: Optional[int] = None,
-):
+) -> PIDConfigs:
     """PID control using the gyro sensor.
 
     Parameters
@@ -42,6 +57,11 @@ def extract_pid_constants(
         termination condition as a tuple (name: str, value: int or float), by default degrees
     sensor_port : Optional[int], optional
         sensor port must be 1, 2, 3 or 4, by default None
+
+    Returns
+    -------
+    PIDConfigs
+        PIDConfigs object
 
     Raises
     ------
@@ -165,3 +185,17 @@ def extract_pid_constants(
             )
     sensor_port: int = int(sensor_port)
     logging.info(f"sensor port: {sensor_port} from config file")
+
+    pid_configs = PIDConfigs(
+        **{
+            "kp": kp.value,
+            "ki": ki.value,
+            "kd": kd.value,
+            "accepted_error": accepted_error.value,
+            "sensor": sensor,
+            "sensor_port": sensor_port,
+            "termination_condition": terminator.name,
+            "termination_value": terminator.value,
+        }
+    )
+    return pid_configs
