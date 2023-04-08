@@ -164,22 +164,22 @@ def extract_pid_constants(
         logging.warning("it's better to set the sensor port in the config file")
         logging.info(f"sensor port: {sensor_port} from function arguments")
     else:
-        gyro_ports_counter: int = 0
+        ports_counter: int = 0
         sensors_dict: dict = get_config("robot_sensors")
         for key, value in sensors_dict.items():
             if value:
                 if value.lower() == sensor.lower():
                     sensor_port = key.split("_")[1]
-                    gyro_ports_counter += 1
+                    ports_counter += 1
                 else:
                     logging.error(
                         f"Invalid sensor name, expected on of [Gyro, Color] got '{value}'"
                     )
                     raise ValueError("Invalid sensor name")
-        if gyro_ports_counter == 0:
+        if ports_counter == 0:
             logging.error("No gyro sensor is set")
             raise ValueError("No gyro sensor is set")
-        elif gyro_ports_counter > 1:
+        elif ports_counter > 1:
             logging.warning(
                 f"more than one gyro sensor is set, the last one will be used which is {sensor_port}"
             )
