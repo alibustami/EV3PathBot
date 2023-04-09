@@ -14,7 +14,6 @@ class TestUtilites(unittest.TestCase):
             "gyro",
             constants=(1, 1, 1),
             accepted_error=1,
-            termination_condition=("degrees", 200),
             sensor_port="1",
         )
         expected_output = PIDConfigs(
@@ -25,8 +24,6 @@ class TestUtilites(unittest.TestCase):
                 "accepted_error": 1,
                 "sensor": "gyro",
                 "sensor_port": 1,
-                "termination_condition": "degrees",
-                "termination_value": 200,
             }
         )
         self.assertEqual(pid_constants, expected_output)
@@ -40,10 +37,7 @@ class TestUtilites(unittest.TestCase):
             "pid_constants.kp",
             "pid_constants.ki",
             "pid_constants.kd",
-            "pid_termination_conditions.degrees",
         ]
-        else {"degrees": 1}
-        if key == "pid_termination_conditions"
         else {"port_1": "GYRO"}
         if key == "robot_sensors"
         else None,
@@ -59,8 +53,6 @@ class TestUtilites(unittest.TestCase):
                 "accepted_error": 1,
                 "sensor": "gyro",
                 "sensor_port": 1,
-                "termination_condition": "degrees",
-                "termination_value": 1,
             }
         )
         self.assertEqual(pid_constants, expected_output)

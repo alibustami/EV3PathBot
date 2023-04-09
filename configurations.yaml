@@ -27,11 +27,5 @@ pid_constants:
   kd:
   accepted_error:
 
-pid_termination_conditions:
-  # PID termination conditions, set only one value and leave the other two empty
-  max_iterations:
-  max_time:
-  max_convergence_loops:
-  degrees:
 
 log_file_append: False

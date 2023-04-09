@@ -32,15 +32,12 @@ class PIDConfigs(BaseModel):
     accepted_error: float
     sensor: str
     sensor_port: int
-    termination_condition: str
-    termination_value: Union[int, float]
 
 
 def extract_pid_constants(
     sensor: str,
     constants: Optional[Tuple[float]] = None,
     accepted_error: Optional[float] = None,
-    termination_condition: Optional[Tuple[str, Union[float, int]]] = None,
     sensor_port: Optional[int] = None,
 ) -> PIDConfigs:
     """PID control using the gyro sensor.
@@ -53,8 +50,6 @@ def extract_pid_constants(
         constants of the PID controller (kp, ki, kd), by default None
     accepted_error : Optional[float], optional
         accepted error, by default None
-    termination_condition : Optional[Tuple[str, Union[float, int]]], optional
-        termination condition as a tuple (name: str, value: int or float), by default degrees
     sensor_port : Optional[int], optional
         sensor port must be 1, 2, 3 or 4, by default None
 
@@ -72,7 +67,6 @@ def extract_pid_constants(
         * if the termination condition is invalid (not one of the following: max_time, max_iterations, max_convergence_loop)
     """
     pid_constant = namedtuple("constant", ["value"])
-    terminator = namedtuple("terminator", ["name", "value"])
     # get constants with validation
     if accepted_error:
         logging.warning("it's better to set the accepted error in the config file")
@@ -110,50 +104,6 @@ def extract_pid_constants(
     kp: namedtuple = pid_constant(kp)
     ki: namedtuple = pid_constant(ki)
     kd: namedtuple = pid_constant(kd)
-
-    # get termination condition with validation
-    terminiation_condition_list: list = [
-        "max_time",
-        "max_iterations",
-        "max_convergence_loop",
-        "degrees",
-    ]
-
-    if termination_condition:
-        logging.warning("it's better to set the termination condition in the config file")
-        if termination_condition[0] in terminiation_condition_list:
-            termination_name: str = termination_condition[0]
-            termination_value: Union[float, int] = termination_condition[1]
-            termination: str = termination_name
-            terminator: namedtuple = terminator(termination_name, termination_value)
-            logging.info(
-                f"termination condition is set to '{termination_name}' with value '{termination_value}' from function arguments"
-            )
-        else:
-            message: str = f"Invalid termination condition expected one of {terminiation_condition_list} got '{termination_condition[0]}'"
-            logging.error(message)
-            raise ValueError(message)
-    else:
-        termination_condition_dict: dict = get_config("pid_termination_conditions")
-        termination: str = [
-            key for key, value in termination_condition_dict.items() if value is not None
-        ]
-        if len(termination) == 1:
-            termination, *_ = termination
-            terminator: namedtuple = terminator(
-                termination, termination_condition_dict[termination]
-            )
-            logging.info(
-                f"termination condition is set to '{termination}' with value '{termination_condition_dict[termination]}' from config file"
-            )
-        elif len(termination) > 1:
-            logging.warning(
-                f"more than one termination condition is set, the first one will be used which is {termination[0]}"
-            )
-            termination: str = termination[0]
-        elif not termination:
-            logging.error("No termination condition is set")
-            raise ValueError("No termination condition is set")
 
     # get sensor port with validation
     logging.info(f"selected sensor: {sensor}")
@@ -194,8 +144,6 @@ def extract_pid_constants(
             "accepted_error": accepted_error.value,
             "sensor": sensor,
             "sensor_port": sensor_port,
-            "termination_condition": terminator.name,
-            "termination_value": terminator.value,
         }
     )
     return pid_configs
