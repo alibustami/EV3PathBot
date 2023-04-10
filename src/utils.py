@@ -11,16 +11,7 @@ log_file_append = get_config("log_file_append")
 if not log_file_append:
     log_file_append = False
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s: on file %(filename)s, on line %(lineno)d: %(message)s",
-    filename="logs.log",
-    filemode="w" if not log_file_append else "a",
-)
-
-logging.info(
-    f"logging file mode is {'append' if log_file_append else 'write'}, you can change it in the config file"
-)
+logger = logging.getLogger(__name__)
 
 
 class PIDConfigs(BaseModel):
@@ -69,21 +60,21 @@ def extract_pid_constants(
     pid_constant = namedtuple("constant", ["value"])
     # get constants with validation
     if accepted_error:
-        logging.warning("it's better to set the accepted error in the config file")
-        logging.info(f"accepted error: {accepted_error}")
+        logger.warning("it's better to set the accepted error in the config file")
+        logger.info(f"accepted error: {accepted_error}")
     else:
         accepted_error = get_config("pid_constants.accepted_error")
         if not accepted_error:
-            logging.error("No accepted error is set")
+            logger.error("No accepted error is set")
             raise ValueError("No accepted error is set")
-        logging.info(f"accepted error: {accepted_error}")
+        logger.info(f"accepted error: {accepted_error}")
         accepted_error: float = float(accepted_error)
     accepted_error: namedtuple = pid_constant(accepted_error)
 
     if constants:
         (kp, ki, kd) = constants
-        logging.warning("it's better to set the constants in the config file")
-        logging.info(
+        logger.warning("it's better to set the constants in the config file")
+        logger.info(
             f"kp: {kp}, ki: {ki}, kd: {kd}, accepted_error: {accepted_error.value} from function arguments"
         )
     else:
@@ -93,9 +84,9 @@ def extract_pid_constants(
             get_config("pid_constants.kd"),
         )
         if any(value is None for value in [kp, ki, kd]):
-            logging.error("No constants are set")
+            logger.error("No constants are set")
             raise ValueError("No constants are set")
-        logging.info(
+        logger.info(
             f"kp: {kp}, ki: {ki}, kd: {kd}, accepted_error: {accepted_error.value} form config file"
         )
         kp: float = float(kp)
@@ -106,13 +97,13 @@ def extract_pid_constants(
     kd: namedtuple = pid_constant(kd)
 
     # get sensor port with validation
-    logging.info(f"selected sensor: {sensor}")
+    logger.info(f"selected sensor: {sensor}")
     if sensor_port:
         if sensor_port not in ["1", "2", "3", "4"]:
-            logging.error(f"Invalid sensor port, must be 1, 2, 3 or 4 got '{sensor_port}'")
+            logger.error(f"Invalid sensor port, must be 1, 2, 3 or 4 got '{sensor_port}'")
             raise ValueError("Invalid sensor port")
-        logging.warning("it's better to set the sensor port in the config file")
-        logging.info(f"sensor port: {sensor_port} from function arguments")
+        logger.warning("it's better to set the sensor port in the config file")
+        logger.info(f"sensor port: {sensor_port} from function arguments")
     else:
         ports_counter: int = 0
         sensors_dict: dict = get_config("robot_sensors")
@@ -122,19 +113,17 @@ def extract_pid_constants(
                     sensor_port = key.split("_")[1]
                     ports_counter += 1
                 else:
-                    logging.error(
-                        f"Invalid sensor name, expected on of [Gyro, Color] got '{value}'"
-                    )
+                    logger.error(f"Invalid sensor name, expected on of [Gyro, Color] got '{value}'")
                     raise ValueError("Invalid sensor name")
         if ports_counter == 0:
-            logging.error("No gyro sensor is set")
+            logger.error("No gyro sensor is set")
             raise ValueError("No gyro sensor is set")
         elif ports_counter > 1:
-            logging.warning(
+            logger.warning(
                 f"more than one gyro sensor is set, the last one will be used which is {sensor_port}"
             )
     sensor_port: int = int(sensor_port)
-    logging.info(f"sensor port: {sensor_port} from config file")
+    logger.info(f"sensor port: {sensor_port} from config file")
 
     pid_configs = PIDConfigs(
         **{
