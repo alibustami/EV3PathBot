@@ -1,8 +1,11 @@
 """This module contains the PID controller using max iterations as the termination condition."""
+import logging
 from typing import Optional, Tuple, Union
 
 from src.pid.core_pid import pid_control
 from src.utils import extract_pid_constants
+
+logger = logging.getLogger(__name__)
 
 
 def pid_max_iterations(
@@ -37,6 +40,10 @@ def pid_max_iterations(
     Union[int, float]
         The PID control value.
     """
+    if constants:
+        logger.warning("It's better to set the constants in the config file")
+    if accepted_error:
+        logger.warning("It's better to set the accepted error in the config file")
     pid_configs = extract_pid_constants(sensor)
 
     kp = constants[0] if constants else pid_configs.kp
@@ -44,6 +51,15 @@ def pid_max_iterations(
     kd = constants[2] if constants else pid_configs.kd
     accepted_error = accepted_error if accepted_error else pid_configs.accepted_error
 
+    logger.info(
+        f"""Starting PID control with the following parameters:
+        process variable: {process_variable}
+        set point: {set_point}
+        sensor: {sensor}
+        iterations: {iterations}
+        constants: {constants}
+        accepted error: {accepted_error}"""
+    )
     iterations_counter: int = 0
     for _ in range(iterations):
         pid, sum_of_errors, last_error = pid_control(
