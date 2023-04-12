@@ -39,8 +39,8 @@ class IntroScreen(tk.Frame):
                 filetypes=(("png files", "*.png"), ("all files", "*.*")),
             )
             try:
-                img = cv2.imread(path_file)
-                if img is not None:
+                self.img = cv2.imread(path_file)
+                if self.img is not None:
                     self.select_image_text.configure(
                         text="Image selected successfully",
                         fg="green",
@@ -108,7 +108,7 @@ class IntroScreen(tk.Frame):
         def closew_window_and_open_main_window():
             self.master.destroy()
             main_window = tk.Tk()
-            app = MainWindow(master=main_window)
+            app = MainWindow(master=main_window, image=self.img)
             app.mainloop()
 
         _create_title_image(self)
