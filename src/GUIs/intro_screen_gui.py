@@ -1,4 +1,4 @@
-"""This module constains the GUI for the project."""
+"""This module constains the intro screen GUI."""
 import os
 import tkinter as tk
 from tkinter import filedialog
