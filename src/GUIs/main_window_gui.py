@@ -16,7 +16,9 @@ class MainWindow(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("EV3PathBOT")
-        self.master.geometry("1000x1000")
+        width = self.master.winfo_screenwidth()
+        height = self.master.winfo_screenheight()
+        self.master.geometry(f"{width}x{height}")
         self.bg_color = "#23272D"
         self.master.configure(background=self.bg_color)
         self.master.resizable(False, False)
