@@ -1,11 +1,14 @@
 """This module contains the main window GUI class."""
 import tkinter as tk
+from time import sleep
 
 import cv2
 import numpy as np
 from PIL import Image, ImageTk
 
 from src.configs import get_config
+from src.GUIs.key_logger import keylogger
+from src.GUIs.mouse_logger import mouselogger
 
 robot_length = get_config("robot_dimensions.length")
 robot_width = get_config("robot_dimensions.width")
