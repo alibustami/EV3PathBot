@@ -6,6 +6,12 @@ robot_dimensions:
   # wheel diameter in mm
   wheel_diameter:
 
+mat_dimensions:
+  # length and with on mm
+  length:
+  width:
+
+
 robot_motors:
   # one of (MEDIUM, LARGE)
   port_A:
