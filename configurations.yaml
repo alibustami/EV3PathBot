@@ -1,7 +1,7 @@
 robot_dimensions:
-  # length and with on Studs
-  length:
-  width:
+  # length and width on Studs
+  length_x:
+  width_y:
 
   # wheel diameter in mm
   wheel_diameter:

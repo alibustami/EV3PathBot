@@ -7,8 +7,8 @@ import numpy as np
 from src.configs import get_config
 from src.converters import stud_to_pixel
 
-robot_length: int = int(get_config("robot_dimensions.length"))
-robot_width: int = int(get_config("robot_dimensions.width"))
+robot_length: int = int(get_config("robot_dimensions.length_x"))
+robot_width: int = int(get_config("robot_dimensions.width_y"))
 
 mat_length: int = int(get_config("mat_dimensions.length_x"))
 mat_width: int = int(get_config("mat_dimensions.width_y"))
