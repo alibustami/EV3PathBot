@@ -13,11 +13,18 @@ robot_width: int = int(get_config("robot_dimensions.width_y"))
 mat_length: int = int(get_config("mat_dimensions.length_x"))
 mat_width: int = int(get_config("mat_dimensions.width_y"))
 
+detla_theta: int = int(get_config("steps.delta_theta"))
+delta_pixels: int = int(get_config("steps.delta_pixels"))
+additional_motors_steps: int = int(get_config("steps.additional_motors_steps"))
+
 if not robot_length or not robot_width:
     raise ValueError("Robot length or width is not defined in the config file.")
 
 if not mat_length or not mat_width:
     raise ValueError("Mat length or width is not defined in the config file.")
+
+if not detla_theta or not delta_pixels or not additional_motors_steps:
+    raise ValueError("Steps are not defined in the config file.")
 
 
 image_path: str = get_config("mat_image_path")
@@ -31,6 +38,8 @@ theta: int = 0
 saved_boxes: list = []
 saved_theta: list = []
 saved_lines: list = []
+additional_motor_1: list = []
+additional_motor_2: list = []
 while True:
     image = original_image.copy()
     if saved_boxes:
@@ -119,19 +128,28 @@ while True:
     if key == ord("q"):
         break
     elif key == ord(","):
-        theta += 3
+        theta += detla_theta
     elif key == ord("."):
-        theta -= 3
+        theta -= detla_theta
     elif key == ord("a"):
-        robot_top_left_corner[0] -= 5
+        robot_top_left_corner[0] -= delta_pixels
     elif key == ord("d"):
-        robot_top_left_corner[0] += 5
+        robot_top_left_corner[0] += delta_pixels
     elif key == ord("w"):
-        robot_top_left_corner[1] -= 5
+        robot_top_left_corner[1] -= delta_pixels
     elif key == ord("s"):
-        robot_top_left_corner[1] += 5
+        robot_top_left_corner[1] += delta_pixels
     elif key == ord("p"):
         saved_boxes.append(rotated_box)
         saved_theta.append(theta)
+    elif key == ord("z"):
+        additional_motor_1.append(additional_motors_steps)
+    elif key == ord("x"):
+        additional_motor_1.append(-additional_motors_steps)
+    elif key == ord("c"):
+        additional_motor_2.append(additional_motors_steps)
+    elif key == ord("v"):
+        additional_motor_2.append(-additional_motors_steps)
+
 
 cv2.destroyAllWindows()

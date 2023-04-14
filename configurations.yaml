@@ -26,3 +26,8 @@ robot sensors:
   port_2:
   port_3:
   port_4:
+
+steps:
+  delta_theta:
+  delta_pixels:
+  additional_motor_steps:
