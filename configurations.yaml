@@ -11,6 +11,7 @@ mat_dimensions:
   length:
   width:
 
+mat_image_path:
 
 robot_motors:
   # one of (MEDIUM, LARGE)
