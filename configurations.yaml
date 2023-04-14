@@ -8,8 +8,8 @@ robot_dimensions:
 
 mat_dimensions:
   # length and with on mm
-  length:
-  width:
+  length_x:
+  width_y:
 
 mat_image_path:
 
