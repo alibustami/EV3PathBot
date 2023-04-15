@@ -5,7 +5,8 @@ from tkinter import filedialog
 
 import cv2
 
-from src.GUIs.main_window_gui import MainWindow
+# from src.GUIs.main_window_gui import MainWindow
+from src.GUIs.main_screen import run
 
 
 class IntroScreen(tk.Frame):
@@ -107,9 +108,7 @@ class IntroScreen(tk.Frame):
 
         def closew_window_and_open_main_window():
             self.master.destroy()
-            main_window = tk.Tk()
-            app = MainWindow(master=main_window, image=self.img)
-            app.mainloop()
+            run(self.img)
 
         _create_title_image(self)
         _add_welcoming_text(self)
