@@ -36,7 +36,7 @@ class IntroScreen(tk.Frame):
             path_file = filedialog.askopenfilename(
                 initialdir="/",
                 title="Select a File",
-                filetypes=(("png files", "*.png"), ("all files", "*.*")),
+                filetypes=(("png image", "*.png"), ("jpg image", "*.jpg"), ("all files", "*.*")),
             )
             try:
                 self.img = cv2.imread(path_file)
