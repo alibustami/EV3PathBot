@@ -11,21 +11,30 @@ from src.motors_extraction import motors_extraction
 robot_length: int = int(get_config("robot_dimensions.length_x"))
 robot_width: int = int(get_config("robot_dimensions.width_y"))
 
+if not robot_length or not robot_width:
+    raise ValueError("Robot length or width is not defined in the config file.")
+
 mat_length: int = int(get_config("mat_dimensions.length_x"))
 mat_width: int = int(get_config("mat_dimensions.width_y"))
+
+if not mat_length or not mat_width:
+    raise ValueError("Mat length or width is not defined in the config file.")
 
 detla_theta: int = int(get_config("steps.delta_theta"))
 delta_pixels: int = int(get_config("steps.delta_pixels"))
 additional_motors_steps: int = int(get_config("steps.additional_motors_steps"))
 
-if not robot_length or not robot_width:
-    raise ValueError("Robot length or width is not defined in the config file.")
-
-if not mat_length or not mat_width:
-    raise ValueError("Mat length or width is not defined in the config file.")
-
 if not detla_theta or not delta_pixels or not additional_motors_steps:
     raise ValueError("Steps are not defined in the config file.")
+
+large_motors_positive_direction: str = get_config(
+    "robot_movement_configurations.large_motor_positive_direction"
+)
+gyro_positive_direction: str = get_config("robot_movement_configurations.gyro_positive_direction")
+
+if large_motors_positive_direction is None or gyro_positive_direction is None:
+    raise ValueError("Robot movement configurations are not defined in the config file.")
+
 
 _, medium_motors_list = motors_extraction()
 first_additional_motor, second_additional_motor = medium_motors_list
@@ -50,16 +59,28 @@ while True:
     if saved_boxes:
         for i in range(len(saved_boxes)):
             cv2.polylines(image, [saved_boxes[i].astype(int)], True, (0, 255, 0), 2)
-            cv2.circle(
-                image,
-                (
-                    (int(saved_boxes[i][0][0]) + int(saved_boxes[i][1][0])) // 2,
-                    (int(saved_boxes[i][0][1]) + int(saved_boxes[i][1][1])) // 2,
-                ),
-                5,
-                (0, 0, 255),
-                -1,
-            )
+            if large_motors_positive_direction:
+                cv2.circle(
+                    image,
+                    (
+                        (int(saved_boxes[i][0][0]) + int(saved_boxes[i][1][0])) // 2,
+                        (int(saved_boxes[i][0][1]) + int(saved_boxes[i][1][1])) // 2,
+                    ),
+                    5,
+                    (0, 0, 255),
+                    -1,
+                )
+            else:
+                cv2.circle(
+                    image,
+                    (
+                        (int(saved_boxes[i][2][0]) + int(saved_boxes[i][3][0])) // 2,
+                        (int(saved_boxes[i][2][1]) + int(saved_boxes[i][3][1])) // 2,
+                    ),
+                    5,
+                    (0, 0, 255),
+                    -1,
+                )
             cv2.putText(
                 image,
                 str(saved_theta[i]),
@@ -90,19 +111,35 @@ while True:
 
         if len(saved_boxes) > 1:
             for i in range(len(saved_boxes) - 1):
-                cv2.line(
-                    image,
-                    (
-                        (int(saved_boxes[i][0][0]) + int(saved_boxes[i][1][0])) // 2,
-                        (int(saved_boxes[i][0][1]) + int(saved_boxes[i][1][1])) // 2,
-                    ),
-                    (
-                        (int(saved_boxes[i + 1][0][0]) + int(saved_boxes[i + 1][1][0])) // 2,
-                        (int(saved_boxes[i + 1][0][1]) + int(saved_boxes[i + 1][1][1])) // 2,
-                    ),
-                    (255, 0, 0),
-                    2,
-                )
+                # draw a line between the centers of the boxes
+                if large_motors_positive_direction:
+                    cv2.line(
+                        image,
+                        (
+                            (int(saved_boxes[i][0][0]) + int(saved_boxes[i][1][0])) // 2,
+                            (int(saved_boxes[i][0][1]) + int(saved_boxes[i][1][1])) // 2,
+                        ),
+                        (
+                            (int(saved_boxes[i + 1][0][0]) + int(saved_boxes[i + 1][1][0])) // 2,
+                            (int(saved_boxes[i + 1][0][1]) + int(saved_boxes[i + 1][1][1])) // 2,
+                        ),
+                        (0, 0, 255),
+                        2,
+                    )
+                else:
+                    cv2.line(
+                        image,
+                        (
+                            (int(saved_boxes[i][2][0]) + int(saved_boxes[i][3][0])) // 2,
+                            (int(saved_boxes[i][2][1]) + int(saved_boxes[i][3][1])) // 2,
+                        ),
+                        (
+                            (int(saved_boxes[i + 1][2][0]) + int(saved_boxes[i + 1][3][0])) // 2,
+                            (int(saved_boxes[i + 1][2][1]) + int(saved_boxes[i + 1][3][1])) // 2,
+                        ),
+                        (0, 0, 255),
+                        2,
+                    )
 
     box = np.array(
         [
@@ -154,16 +191,28 @@ while True:
         (0, 0, 0),
         1,
     )
-    cv2.circle(
-        image,
-        (
-            (int(rotated_box[0][0]) + int(rotated_box[1][0])) // 2,
-            (int(rotated_box[0][1]) + int(rotated_box[1][1])) // 2,
-        ),
-        5,
-        (0, 0, 255),
-        -1,
-    )
+    if large_motors_positive_direction:
+        cv2.circle(
+            image,
+            (
+                (int(rotated_box[0][0]) + int(rotated_box[1][0])) // 2,
+                (int(rotated_box[0][1]) + int(rotated_box[1][1])) // 2,
+            ),
+            5,
+            (0, 0, 255),
+            -1,
+        )
+    else:
+        cv2.circle(
+            image,
+            (
+                (int(rotated_box[2][0]) + int(rotated_box[3][0])) // 2,
+                (int(rotated_box[2][1]) + int(rotated_box[3][1])) // 2,
+            ),
+            5,
+            (0, 0, 255),
+            -1,
+        )
     cv2.imshow("image", image)
 
     key = cv2.waitKey(1)
