@@ -31,3 +31,9 @@ steps:
   delta_theta:
   delta_pixels:
   additional_motor_steps:
+
+robot_movement_configurations:
+  # if the LARGE motors positive movement is forward, bool (True, False)
+  large_motor_positive_direction:
+  # if the GYRO sensor positive movement is clockwise, bool (True, False)
+  gyro_positive_direction:
