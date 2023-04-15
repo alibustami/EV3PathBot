@@ -46,8 +46,6 @@ def run(image: np.ndarray):
         original_image: np.ndarray = cv2.imread(image_path)
     else:
         original_image = image
-    # if not original_image.any():
-    #     raise ValueError("Mat image is not defined in the config file.")
     robot_lengh_x_pixels: int = stud_to_pixel(robot_length)
     robot_width_y_pixels: int = stud_to_pixel(robot_width)
     image_height_y, image_width_x, _ = original_image.shape
@@ -116,7 +114,6 @@ def run(image: np.ndarray):
 
             if len(saved_boxes) > 1:
                 for i in range(len(saved_boxes) - 1):
-                    # draw a line between the centers of the boxes
                     if large_motors_positive_direction:
                         cv2.line(
                             image,
