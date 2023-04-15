@@ -86,7 +86,7 @@ def run(image: np.ndarray):
                     )
                 cv2.putText(
                     image,
-                    str(saved_theta[i]),
+                    str(-saved_theta[i]) if gyro_positive_direction else str(saved_theta[i]),
                     (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1])),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
@@ -172,7 +172,7 @@ def run(image: np.ndarray):
         cv2.polylines(image, [rotated_box.astype(int)], True, (0, 255, 0), 2)
         cv2.putText(
             image,
-            str(theta),
+            str(-theta) if gyro_positive_direction else str(theta),
             (int(rotated_box[0][0]), int(rotated_box[0][1])),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.5,
@@ -238,7 +238,7 @@ def run(image: np.ndarray):
             robot_top_left_corner[1] += delta_pixels
         elif key == ord("p"):
             saved_boxes.append(rotated_box)
-            saved_theta.append(theta)
+            saved_theta.append(-theta if gyro_positive_direction else theta)
             additional_motor_1_list.append(additional_motor_1)
             additional_motor_2_list.append(additional_motor_2)
             additional_motor_1: int = 0
