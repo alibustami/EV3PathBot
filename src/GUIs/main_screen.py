@@ -6,6 +6,7 @@ import numpy as np
 
 from src.configs import get_config
 from src.converters import stud_to_pixel
+from src.motors_extraction import motors_extraction
 
 robot_length: int = int(get_config("robot_dimensions.length_x"))
 robot_width: int = int(get_config("robot_dimensions.width_y"))
@@ -26,6 +27,8 @@ if not mat_length or not mat_width:
 if not detla_theta or not delta_pixels or not additional_motors_steps:
     raise ValueError("Steps are not defined in the config file.")
 
+_, medium_motors_list = motors_extraction()
+first_additional_motor, second_additional_motor = medium_motors_list
 
 image_path: str = get_config("mat_image_path")
 original_image: np.ndarray = cv2.imread(image_path)
@@ -35,11 +38,13 @@ image_height_y, image_width_x, _ = original_image.shape
 robot_top_left_corner = np.array([0, image_height_y - robot_width_y_pixels])
 
 theta: int = 0
+additional_motor_1: int = 0
+additional_motor_2: int = 0
 saved_boxes: list = []
 saved_theta: list = []
 saved_lines: list = []
-additional_motor_1: list = []
-additional_motor_2: list = []
+additional_motor_1_list: list = []
+additional_motor_2_list: list = []
 while True:
     image = original_image.copy()
     if saved_boxes:
@@ -64,6 +69,25 @@ while True:
                 (0, 0, 255),
                 1,
             )
+            cv2.putText(
+                image,
+                first_additional_motor + ": " + str(additional_motor_1_list[i]),
+                (int(saved_boxes[i][0][0] + 40), int(saved_boxes[i][0][1])),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 0, 0),
+                1,
+            )
+            cv2.putText(
+                image,
+                second_additional_motor + ": " + str(additional_motor_2_list[i]),
+                (int(saved_boxes[i][0][0] + 130), int(saved_boxes[i][0][1])),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 0, 0),
+                1,
+            )
+
         if len(saved_boxes) > 1:
             for i in range(len(saved_boxes) - 1):
                 cv2.line(
@@ -112,6 +136,24 @@ while True:
         (0, 0, 255),
         1,
     )
+    cv2.putText(
+        image,
+        first_additional_motor + ": " + str(additional_motor_1),
+        (int(rotated_box[0][0] + 40), int(rotated_box[0][1])),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.5,
+        (0, 0, 0),
+        1,
+    )
+    cv2.putText(
+        image,
+        second_additional_motor + ": " + str(additional_motor_2),
+        (int(rotated_box[0][0] + 130), int(rotated_box[0][1])),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.5,
+        (0, 0, 0),
+        1,
+    )
     cv2.circle(
         image,
         (
@@ -142,14 +184,18 @@ while True:
     elif key == ord("p"):
         saved_boxes.append(rotated_box)
         saved_theta.append(theta)
+        additional_motor_1_list.append(additional_motor_1)
+        additional_motor_2_list.append(additional_motor_2)
+        additional_motor_1: int = 0
+        additional_motor_2: int = 0
     elif key == ord("z"):
-        additional_motor_1.append(additional_motors_steps)
+        additional_motor_1 += additional_motors_steps
     elif key == ord("x"):
-        additional_motor_1.append(-additional_motors_steps)
+        additional_motor_1 -= additional_motors_steps
     elif key == ord("c"):
-        additional_motor_2.append(additional_motors_steps)
+        additional_motor_2 += additional_motors_steps
     elif key == ord("v"):
-        additional_motor_2.append(-additional_motors_steps)
+        additional_motor_2 -= additional_motors_steps
 
 
 cv2.destroyAllWindows()
