@@ -7,6 +7,7 @@ import numpy as np
 from src.configs import get_config
 from src.converters import stud_to_pixel
 from src.motors_extraction import motors_extraction
+from src.path_creation import create_path
 
 robot_length: int = int(get_config("robot_dimensions.length_x"))
 robot_width: int = int(get_config("robot_dimensions.width_y"))
@@ -253,3 +254,5 @@ def run(image: np.ndarray):
             additional_motor_2 -= additional_motors_steps
 
     cv2.destroyAllWindows()
+
+    return saved_boxes, saved_theta, additional_motor_1_list, additional_motor_2_list
