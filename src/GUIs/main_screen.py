@@ -96,7 +96,7 @@ def run(image: np.ndarray):
                 cv2.putText(
                     image,
                     first_additional_motor + ": " + str(additional_motor_1_list[i]),
-                    (int(saved_boxes[i][0][0] + 40), int(saved_boxes[i][0][1])),
+                    (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 15),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
                     (0, 0, 0),
@@ -105,7 +105,7 @@ def run(image: np.ndarray):
                 cv2.putText(
                     image,
                     second_additional_motor + ": " + str(additional_motor_2_list[i]),
-                    (int(saved_boxes[i][0][0] + 130), int(saved_boxes[i][0][1])),
+                    (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 30),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
                     (0, 0, 0),
@@ -182,7 +182,7 @@ def run(image: np.ndarray):
         cv2.putText(
             image,
             first_additional_motor + ": " + str(additional_motor_1),
-            (int(rotated_box[0][0] + 40), int(rotated_box[0][1])),
+            (int(rotated_box[0][0]), int(rotated_box[0][1]) + 15),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.5,
             (0, 0, 0),
@@ -191,7 +191,7 @@ def run(image: np.ndarray):
         cv2.putText(
             image,
             second_additional_motor + ": " + str(additional_motor_2),
-            (int(rotated_box[0][0] + 130), int(rotated_box[0][1])),
+            (int(rotated_box[0][0]), int(rotated_box[0][1]) + 30),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.5,
             (0, 0, 0),
