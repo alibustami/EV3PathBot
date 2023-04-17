@@ -69,8 +69,6 @@ class MainWindow(tk.Frame):
                 height=self.photo.height(),
                 bg=self.off_white,
             )
-            # self.image_canvas.pack()
-            # put the canvas in the middle of the window
             self.image_canvas.place(
                 x=self.master.winfo_width(),
                 y=self.master.winfo_height(),

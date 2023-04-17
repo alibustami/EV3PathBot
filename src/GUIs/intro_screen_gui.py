@@ -95,7 +95,6 @@ class IntroScreen(tk.Frame):
             self.open_folder_image = tk.PhotoImage(
                 file=os.path.join("src", "GUIs", "assets", "open_folder.png")
             )
-            # resize the image
             self.open_folder_image = self.open_folder_image.subsample(5)
             self.open_folder_button = tk.Button(
                 intro_screen,

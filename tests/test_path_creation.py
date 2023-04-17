@@ -41,10 +41,6 @@ class TestPathCreation(unittest.TestCase):
         additional_motor_1 = [0, -100, 0, 110, 0, 0]
         additional_motor_2 = [0, 0, 0, 0, 0, 0]
         additional_motors_mode = ["P", "P", "P", "S", "S", "S"]
-        # robot_positions = [[0, 0]]
-        # angles = [0]
-        # additional_motor_1 = [0]
-        # additional_motor_2 = [0]
         expected = {
             "x": [10, 10, 138, 348, 330, 250],
             "y": [685, 430, 421, 421, 570, 780],
