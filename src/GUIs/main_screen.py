@@ -1,5 +1,6 @@
 """This module contains the main window GUI."""
 import os
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -37,16 +38,20 @@ if large_motors_positive_direction is None or gyro_positive_direction is None:
     raise ValueError("Robot movement configurations are not defined in the config file.")
 
 
-def run(image: np.ndarray):
+def run(image: Optional[np.ndarray] = None):
     """Run the main window GUI."""
     _, medium_motors_list = motors_extraction()
     first_additional_motor, second_additional_motor = medium_motors_list
 
-    image_path: str = get_config("mat_image_path")
-    if image_path:
-        original_image: np.ndarray = cv2.imread(image_path)
+    if image is None:
+        image_path: str = get_config("mat_image_path")
+        if image_path:
+            original_image: np.ndarray = cv2.imread(image_path)
+        else:
+            raise ValueError("No image was given.")
     else:
         original_image = image
+
     robot_lengh_x_pixels: int = stud_to_pixel(robot_length)
     robot_width_y_pixels: int = stud_to_pixel(robot_width)
     image_height_y, image_width_x, _ = original_image.shape
@@ -89,7 +94,7 @@ def run(image: np.ndarray):
                     )
                 cv2.putText(
                     image,
-                    str(-saved_theta[i]) if gyro_positive_direction else str(saved_theta[i]),
+                    str(saved_theta[i]),
                     (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1])),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
