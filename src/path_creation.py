@@ -11,6 +11,7 @@ def create_path(
     angles: List[int],
     additional_motor_1: List[int],
     additional_motor_2: List[int],
+    additional_motors_mode: List[chr],
 ) -> dict:
     """Create the path file.
 
@@ -24,6 +25,8 @@ def create_path(
         The additional motor 1.
     additional_motor_2 : List[int]
         The additional motor 2.
+    additional_motors_mode : List[chr]
+        The additional motors mode weather it is Parallel (P) or Series (S).
 
     Returns
     -------
@@ -39,6 +42,7 @@ def create_path(
         "angle": [],
         motor_1: [],
         motor_2: [],
+        "additional_motors_mode": [],
     }
     for i in range(len(robot_positions)):
         posisitions["x"].append(int(robot_positions[i][0][0]))
@@ -46,5 +50,6 @@ def create_path(
         posisitions["angle"].append(angles[i])
         posisitions[motor_1].append(additional_motor_1[i])
         posisitions[motor_2].append(additional_motor_2[i])
+        posisitions["additional_motors_mode"].append(additional_motors_mode[i])
 
     return posisitions

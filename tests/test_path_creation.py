@@ -40,6 +40,7 @@ class TestPathCreation(unittest.TestCase):
         angles = [0, 0, 90, 90, 201, 201]
         additional_motor_1 = [0, -100, 0, 110, 0, 0]
         additional_motor_2 = [0, 0, 0, 0, 0, 0]
+        additional_motors_mode = ["P", "P", "P", "S", "S", "S"]
         # robot_positions = [[0, 0]]
         # angles = [0]
         # additional_motor_1 = [0]
@@ -50,7 +51,10 @@ class TestPathCreation(unittest.TestCase):
             "angle": [0, 0, 90, 90, 201, 201],
             "A": [0, -100, 0, 110, 0, 0],
             "D": [0, 0, 0, 0, 0, 0],
+            "additional_motors_mode": ["P", "P", "P", "S", "S", "S"],
         }
 
-        result = create_path(robot_positions, angles, additional_motor_1, additional_motor_2)
+        result = create_path(
+            robot_positions, angles, additional_motor_1, additional_motor_2, additional_motors_mode
+        )
         self.assertEqual(result, expected)
