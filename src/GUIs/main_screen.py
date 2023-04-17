@@ -58,7 +58,9 @@ def run(image: np.ndarray):
     saved_theta: list = []
     additional_motor_1_list: list = []
     additional_motor_2_list: list = []
+    additional_motors_mode_list: list = []
     while True:
+        additional_motors_mode: chr = "S"
         image = original_image.copy()
         if saved_boxes:
             for i in range(len(saved_boxes)):
@@ -107,6 +109,15 @@ def run(image: np.ndarray):
                     image,
                     second_additional_motor + ": " + str(additional_motor_2_list[i]),
                     (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 30),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 0, 0),
+                    1,
+                )
+                cv2.putText(
+                    image,
+                    additional_motors_mode_list[i],
+                    (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 45),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
                     (0, 0, 0),
@@ -198,6 +209,15 @@ def run(image: np.ndarray):
             (0, 0, 0),
             1,
         )
+        cv2.putText(
+            image,
+            additional_motors_mode,
+            (int(rotated_box[0][0]), int(rotated_box[0][1]) + 45),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 0, 0),
+            1,
+        )
         if large_motors_positive_direction:
             cv2.circle(
                 image,
@@ -242,6 +262,7 @@ def run(image: np.ndarray):
             saved_theta.append(-theta if gyro_positive_direction else theta)
             additional_motor_1_list.append(additional_motor_1)
             additional_motor_2_list.append(additional_motor_2)
+            additional_motors_mode_list.append(additional_motors_mode)
             additional_motor_1: int = 0
             additional_motor_2: int = 0
         elif key == ord("z"):
@@ -252,7 +273,15 @@ def run(image: np.ndarray):
             additional_motor_2 += additional_motors_steps
         elif key == ord("v"):
             additional_motor_2 -= additional_motors_steps
+        elif key == ord("r"):
+            additional_motors_mode: chr = "P"
 
     cv2.destroyAllWindows()
 
-    return saved_boxes, saved_theta, additional_motor_1_list, additional_motor_2_list
+    return (
+        saved_boxes,
+        saved_theta,
+        additional_motor_1_list,
+        additional_motor_2_list,
+        additional_motors_mode_list,
+    )
