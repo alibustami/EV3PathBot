@@ -64,8 +64,8 @@ def run(image: Optional[np.ndarray] = None):
     additional_motor_1_list: list = []
     additional_motor_2_list: list = []
     additional_motors_mode_list: list = []
+    additional_motors_mode: chr = "S"
     while True:
-        additional_motors_mode: chr = "S"
         image = original_image.copy()
         if saved_boxes:
             for i in range(len(saved_boxes)):
@@ -280,6 +280,8 @@ def run(image: Optional[np.ndarray] = None):
             additional_motor_2 -= additional_motors_steps
         elif key == ord("r"):
             additional_motors_mode: chr = "P"
+        elif key == ord("t"):
+            additional_motors_mode: chr = "S"
 
     cv2.destroyAllWindows()
 
