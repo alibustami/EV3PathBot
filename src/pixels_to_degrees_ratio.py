@@ -1,7 +1,15 @@
 """This module contains the pixel to degrees ratio calculator."""
 from typing import List, Tuple
 
-import numpy as np
+import cv2 as cv
+
+from src.configs import get_config
+
+wheel_diameter = get_config("robot_dimensions.wheel_diameter")
+image_path = get_config("mat_image_path")
+img = cv.imread(image_path)
+
+_, width, _ = img.shape
 
 
 def convert_pixels_to_degrees(
@@ -23,10 +31,8 @@ def convert_pixels_to_degrees(
     List[int]
         the degrees the robot should move
     """
-    _, img_length, _ = img_dims
-
     # this equation for calculating the length of the table in cm
-    img_scale: float = img_length / 236.2
+    img_scale: float = width / 236.2
 
     # this equation is for calculating how many cm does 1 wheel rotation make
     wheel_scale: float = (wheel_diameter * 3.14) / 360

@@ -1,9 +1,11 @@
 """This module contains the path creation code."""
+import math
 from typing import List
 
 import numpy as np
 
 from src.motors_extraction import motors_extraction
+from src.pixels_to_degrees_ratio import convert_pixels_to_degrees
 
 
 def create_path(
@@ -39,6 +41,7 @@ def create_path(
     posisitions: dict = {
         "x": [],
         "y": [],
+        "distance": [],
         "angle": [],
         motor_1: [],
         motor_2: [],
@@ -52,4 +55,10 @@ def create_path(
         posisitions[motor_2].append(additional_motor_2[i])
         posisitions["additional_motors_mode"].append(additional_motors_mode[i])
 
+    for i in range(len(posisitions["x"]) - 1):
+        p1 = (posisitions["x"][i], posisitions["y"][i])
+        p2 = (posisitions["x"][i + 1], posisitions["y"][i + 1])
+        distance = math.dist(p1, p2)
+
+        posisitions["distance"].append(convert_pixels_to_degrees(distance))
     return posisitions
