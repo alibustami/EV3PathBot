@@ -27,6 +27,11 @@ robot_sensors:
   port_3:
   port_4:
 
+pid_constants:
+  - kp:
+  - ki:
+  - kd:
+
 
 log_file_append: False
 
