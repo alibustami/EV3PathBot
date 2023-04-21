@@ -48,6 +48,7 @@ class TestPathCreation(unittest.TestCase):
             "A": [0, -100, 0, 110, 0, 0],
             "D": [0, 0, 0, 0, 0, 0],
             "additional_motors_mode": ["P", "P", "P", "S", "S", "S"],
+            "distance_degrees": [473, 238, 389, 278, 417],
         }
 
         result = create_path(

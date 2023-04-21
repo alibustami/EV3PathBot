@@ -41,7 +41,7 @@ def create_path(
     posisitions: dict = {
         "x": [],
         "y": [],
-        "distance": [],
+        "distance_degrees": [],
         "angle": [],
         motor_1: [],
         motor_2: [],
@@ -60,5 +60,9 @@ def create_path(
         p2 = (posisitions["x"][i + 1], posisitions["y"][i + 1])
         distance = math.dist(p1, p2)
 
-        posisitions["distance"].append(convert_pixels_to_degrees(distance))
+        posisitions["distance_degrees"].append((distance))
+
+    posisitions["distance_degrees"] = convert_pixels_to_degrees(
+        np.array(posisitions["distance_degrees"])
+    )
     return posisitions
