@@ -8,8 +8,8 @@ REQUIREMENTS = [
     "pillow",
     "pyautogui",
     "pynput",
-    "python-ev3dev2",
     "pydantic",
+    "python-ev3dev2",
 ]
 
 DEV_REQUIREMENTS = [

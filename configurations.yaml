@@ -27,13 +27,6 @@ robot_sensors:
   port_3:
   port_4:
 
-pid_constants:
-  # PID constants for the robot
-  kp:
-  ki:
-  kd:
-  accepted_error:
-
 
 log_file_append: False
 
