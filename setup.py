@@ -1,7 +1,15 @@
 """This module contains the package information."""
 from setuptools import setup
 
-REQUIREMENTS = ["opencv-contrib-python", "numpy", "tk", "pillow", "pyautogui", "pynput"]
+REQUIREMENTS = [
+    "opencv-contrib-python",
+    "numpy",
+    "tk",
+    "pillow",
+    "pyautogui",
+    "pynput",
+    "python-ev3dev2",
+]
 
 DEV_REQUIREMENTS = [
     "PyYAML",
