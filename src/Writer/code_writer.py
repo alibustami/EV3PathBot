@@ -240,30 +240,30 @@ def on_for_degrees_with_correction (speed: int, degrees: int, brake: bool, corre
         if degrees > 0:
             error{large_motors[0]} =  -motor{large_motors[0]}.position + degrees
             error{large_motors[1]} =  -motor{large_motors[1]}.position + degrees
-            if abs(errorB) > correction_factor:
-                motorB.on(SpeedDPS(errorB * kp))
+            if abs(error{large_motors[0]}) > correction_factor:
+                motor{large_motors[0]}.on(SpeedDPS(error{large_motors[0]} * kp))
             else:
-                motorB.stop()
+                motor{large_motors[0]}.stop()
 
-            if abs(errorC) > correction_factor:
-                motorC.on(SpeedDPS(errorC * kp))
+            if abs(error{large_motors[1]}) > correction_factor:
+                motor{large_motors[1]}.on(SpeedDPS(error{large_motors[1]} * kp))
             else:
-                motorC.stop()
+                motor{large_motors[1]}.stop()
 
         else:
-            errorB =  motorB.position - degrees
-            errorC =  motorC.position - degrees
-            if abs(errorB) > correction_factor:
-                motorB.on(SpeedDPS(-errorB * kp))
+            error{large_motors[0]} =  motor{large_motors[0]}.position - degrees
+            error{large_motors[1]} =  motor{large_motors[1]}.position - degrees
+            if abs(error{large_motors[0]}) > correction_factor:
+                motor{large_motors[0]}.on(SpeedDPS(-error{large_motors[0]} * kp))
             else:
-                motorB.stop()
+                motor{large_motors[0]}.stop()
 
-            if abs(errorC) > correction_factor:
-                motorC.on(SpeedDPS(-errorC * kp))
+            if abs(error{large_motors[1]}) > correction_factor:
+                motor{large_motors[1]}.on(SpeedDPS(-error{large_motors[1]} * kp))
             else:
-                motorC.stop()
-    print('B = ' + str(motorB.position))
-    print('C = ' + str(motorC.position))\n
+                motor{large_motors[1]}.stop()
+    print('{large_motors[0]} = ' + str(motor{large_motors[0]}.position))
+    print('{large_motors[1]} = ' + str(motor{large_motors[1]}.position))\n
 """
 editor.add_function(function1_code)
 
