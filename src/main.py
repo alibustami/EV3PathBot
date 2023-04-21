@@ -1,16 +1,19 @@
 """This module contains the main code for EV3PathBot."""
-from src.GUIs.main_screen import run
-from src.path_creation import create_path
+import logging
 
-(
-    robot_positions,
-    robot_angles,
-    additional_motor_1,
-    additional_motor_2,
-    additional_motors_mode,
-) = run()
-values = create_path(
-    robot_positions, robot_angles, additional_motor_1, additional_motor_2, additional_motors_mode
+from src.configs import get_config
+
+log_file_append = get_config("log_file_append")
+if not log_file_append:
+    log_file_append = False
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: on file %(filename)s, on line %(lineno)d: %(message)s",
+    filename="logs.log",
+    filemode="w" if not log_file_append else "a",
 )
-print(values)
-# print(values["x"],values["y"])
+
+logging.info(
+    f"logging file mode is {'append' if log_file_append else 'write'}, you can change it in the config file"
+)

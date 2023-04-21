@@ -20,12 +20,22 @@ robot_motors:
   port_C:
   port_D:
 
-robot sensors:
+robot_sensors:
   # one of (GYRO, COLOR)
   port_1:
   port_2:
   port_3:
   port_4:
+
+pid_constants:
+  # PID constants for the robot
+  kp:
+  ki:
+  kd:
+  accepted_error:
+
+
+log_file_append: False
 
 steps:
   delta_theta:

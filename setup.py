@@ -9,6 +9,7 @@ REQUIREMENTS = [
     "pyautogui",
     "pynput",
     "python-ev3dev2",
+    "pydantic",
 ]
 
 DEV_REQUIREMENTS = [
