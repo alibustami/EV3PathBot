@@ -3,7 +3,7 @@
 from src.configs import get_config
 from src.motors_extraction import motors_extraction
 
-robot_sensors = get_config("robot sensors")
+robot_sensors = get_config("robot_sensors")
 sensors = list(robot_sensors.values())
 
 
@@ -23,70 +23,75 @@ class CodeEditor:
     def add_imports_and_variables(self) -> None:
         """Add imports and variables to the code."""
         imports_and_variables = f"""
-        from time import sleep
-        import ev3dev2
-        from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B,OUTPUT_C, OUTPUT_D, SpeedDPS, MediumMotor
-        from ev3dev2.sensor import INPUT_1, INPUT_4, INPUT_3,INPUT_2
-        from ev3dev2.sensor.lego import GyroSensor, ColorSensor
-        from ev3dev2.button import Button
-        from ev3dev2.sound import Sound\n\n
-        # brain
-        ev3 = ev3dev2
-        button = Button()
-        sound = Sound()
+from time import sleep
+import ev3dev2
+from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B,OUTPUT_C, OUTPUT_D, SpeedDPS, MediumMotor
+from ev3dev2.sensor import INPUT_1, INPUT_4, INPUT_3,INPUT_2
+from ev3dev2.sensor.lego import GyroSensor, ColorSensor
+from ev3dev2.button import Button
+from ev3dev2.sound import Sound\n\n
+# brain
+ev3 = ev3dev2
+button = Button()
+sound = Sound()
 
-        motorA = {self.port_a}Motor(OUTPUT_A)
-        motorD = {self.pord_d}Motor(OUTPUT_D)
+motorA = {self.port_a}Motor(OUTPUT_A)
+motorD = {self.pord_d}Motor(OUTPUT_D)
 
-        motorB = {self.port_b}Motor(OUTPUT_B)
-        motorC = {self.port_c}Motor(OUTPUT_C)
-        # sensors
-        gyro = GyroSensor(INPUT_2)
-        color_med = ColorSensor(INPUT_3)
-        color_right = ColorSensor(INPUT_4)
-        color_left = ColorSensor(INPUT_1)
+motorB = {self.port_b}Motor(OUTPUT_B)
+motorC = {self.port_c}Motor(OUTPUT_C)
+# sensors
+gyro = GyroSensor(INPUT_2)
+color_med = ColorSensor(INPUT_3)
+color_right = ColorSensor(INPUT_4)
+color_left = ColorSensor(INPUT_1)
         """
         self.code += imports_and_variables
 
     def add_function(self) -> None:
         """Add a function to the code."""
         function_code = f"""
-        def on_for_degrees_with_correction (speed: int, degrees: int, brake: bool, correction_factor: float, kp=12)
-            motor{self.large_motors[0]}.reset()
-            motor{self.large_motors[1]}.reset()
-            motor{self.large_motors[0]}.on_for_degrees(speed=SpeedDPS(speed), degrees= degrees, brake=brake, block=False)
-            motor{self.large_motors[1]}.on_for_degrees(speed=SpeedDPS(speed), degrees= degrees, brake=brake, block=True)
-            error{self.large_motors[0]} =  100
-            error{self.large_motors[1]} =  100
+def on_for_degrees_with_correction (
+    speed: int,
+    degrees: int,
+    brake: bool,
+    correction_factor: int = 0,
+    kp={get_config("pid_constants.kp")}):
+    motor{self.large_motors[0]}.reset()
+    motor{self.large_motors[1]}.reset()
+    motor{self.large_motors[0]}.on_for_degrees(speed=SpeedDPS(speed), degrees= degrees, brake=brake, block=False)
+    motor{self.large_motors[1]}.on_for_degrees(speed=SpeedDPS(speed), degrees= degrees, brake=brake, block=True)
+    error{self.large_motors[0]} =  100
+    error{self.large_motors[1]} =  100
 
-            while abs(error{self.large_motors[0]}) > correction_factor or abs(error{self.large_motors[1]}) > correction_factor:
-                if degrees > 0:
-                    error{self.large_motors[0]} =  -motor{self.large_motors[0]}.position + degrees
-                    error{self.large_motors[1]} =  -motor{self.large_motors[1]}.position + degrees
-                    if abs(error{self.large_motors[0]}) > correction_factor:
-                        motor{self.large_motors[0]}.on(SpeedDPS(error{self.large_motors[0]} * kp))
-                    else:
-                        motor{self.large_motors[0]}.stop()
+    while abs(error{self.large_motors[0]}) > correction_factor or abs(error{self.large_motors[1]}) > correction_factor:
+        if degrees > 0:
+            error{self.large_motors[0]} =  -motor{self.large_motors[0]}.position + degrees
+            error{self.large_motors[1]} =  -motor{self.large_motors[1]}.position + degrees
+            if abs(error{self.large_motors[0]}) > correction_factor:
+                motor{self.large_motors[0]}.on(SpeedDPS(error{self.large_motors[0]} * kp))
+            else:
+                motor{self.large_motors[0]}.stop()
 
-                    if abs(error{self.large_motors[1]}) > correction_factor:
-                        motor{self.large_motors[1]}.on(SpeedDPS(error{self.large_motors[1]} * kp))
-                    else:
-                        motor{self.large_motors[1]}.stop()
+            if abs(error{self.large_motors[1]}) > correction_factor:
+                motor{self.large_motors[1]}.on(SpeedDPS(error{self.large_motors[1]} * kp))
+            else:
+                motor{self.large_motors[1]}.stop()
 
-                else:
-                    error{self.large_motors[0]} =  motor{self.large_motors[0]}.position - degrees
-                    error{self.large_motors[1]} =  motor{self.large_motors[1]}.position - degrees
-                    if abs(error{self.large_motors[0]}) > correction_factor:
-                        motor{self.large_motors[0]}.on(SpeedDPS(-error{self.large_motors[0]} * kp))
-                    else:
-                        motor{self.large_motors[0]}.stop()
+        else:
+            error{self.large_motors[0]} =  motor{self.large_motors[0]}.position - degrees
+            error{self.large_motors[1]} =  motor{self.large_motors[1]}.position - degrees
+            if abs(error{self.large_motors[0]}) > correction_factor:
+                motor{self.large_motors[0]}.on(SpeedDPS(-error{self.large_motors[0]} * kp))
+            else:
+                motor{self.large_motors[0]}.stop()
 
-                    if abs(error{self.large_motors[1]}) > correction_factor:
-                        motor{self.large_motors[1]}.on(SpeedDPS(-error{self.large_motors[1]} * kp))
-                    else:
-                        motor{self.large_motors[1]}.stop()
-            print('{self.large_motors[0]} = ' + str(motor{self.large_motors[0]}.position))
-            print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n
+            if abs(error{self.large_motors[1]}) > correction_factor:
+                motor{self.large_motors[1]}.on(SpeedDPS(-error{self.large_motors[1]} * kp))
+            else:
+                motor{self.large_motors[1]}.stop()
+    print('{self.large_motors[0]} = ' + str(motor{self.large_motors[0]}.position))
+    print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n
         """
         self.code += function_code
 
@@ -108,13 +113,3 @@ class CodeEditor:
 
             # Write the code string
             file.write(self.code)
-
-
-editor = CodeEditor()
-
-
-editor.add_imports_and_variables()
-
-editor.add_function()
-
-editor.write_code("my_function.py")
