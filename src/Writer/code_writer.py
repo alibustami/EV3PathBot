@@ -17,10 +17,10 @@ sensors = list(robot_sensors.values())
 
 
 class CodeEditor:
-    """Write EV3 code class."""
+    """Write EV3DEV code."""
 
     def __init__(self):
-        """Constructre."""
+        """Class Constructor."""
         self.code = ""
 
     def add_imports_and_variables(self, imports_and_variables: str) -> None:
