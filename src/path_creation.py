@@ -43,6 +43,7 @@ def create_path(
         "y": [],
         "distance_degrees": [],
         "angle": [],
+        "angles_difference": [],
         motor_1: [],
         motor_2: [],
         "additional_motors_mode": [],
@@ -58,9 +59,17 @@ def create_path(
     for i in range(len(posisitions["x"]) - 1):
         p1 = (posisitions["x"][i], posisitions["y"][i])
         p2 = (posisitions["x"][i + 1], posisitions["y"][i + 1])
+
         distance = math.dist(p1, p2)
 
         posisitions["distance_degrees"].append((distance))
+
+    for i in range(len(posisitions["angle"]) - 1):
+        an1 = posisitions["angle"][i]
+        an2 = posisitions["angle"][i + 1]
+        angle = an2 - an1
+
+        posisitions["angles_difference"].append((angle))
 
     posisitions["distance_degrees"] = convert_pixels_to_degrees(
         np.array(posisitions["distance_degrees"])
