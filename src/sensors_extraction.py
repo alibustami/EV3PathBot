@@ -25,11 +25,16 @@ def sensors_extraction() -> dict:
     gyro_sensors_counter: int = 0
     color_sensors_counter: int = 0
     for port, sensor in sensors_dict.items():
-        if sensor.lower() == "gyro":
-            gyro_sensors_counter += 1
-            formated_sensors_dict[f"gyro_{gyro_sensors_counter}"] = f"INPUT_{port.split('_')[-1]}"
-        elif sensor.lower() == "color":
-            color_sensors_counter += 1
-            formated_sensors_dict[f"color_{color_sensors_counter}"] = f"INPUT_{port.split('_')[-1]}"
+        if sensor:
+            if sensor.lower() == "gyro":
+                gyro_sensors_counter += 1
+                formated_sensors_dict[
+                    f"gyro_{gyro_sensors_counter}"
+                ] = f"INPUT_{port.split('_')[-1]}"
+            elif sensor.lower() == "color":
+                color_sensors_counter += 1
+                formated_sensors_dict[
+                    f"color_{color_sensors_counter}"
+                ] = f"INPUT_{port.split('_')[-1]}"
 
     return formated_sensors_dict
