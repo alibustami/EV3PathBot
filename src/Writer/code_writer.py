@@ -32,6 +32,15 @@ class CodeEditor:
             )
         return large_motors_import
 
+    def _add_sensors(self):
+        sensors_import = ""
+        for sensor, port in self.robot_sensors.items():
+            if sensor.startswith("gyro"):
+                sensors_import += f"{sensor} = GyroSensor({port})\n"
+            if sensor.startswith("color"):
+                sensors_import += f"{sensor} = ColorSensor({port})\n"
+        return sensors_import
+
     def add_imports_and_variables(self) -> None:
         """Add imports and variables to the code."""
         imports_and_variables = f"""
@@ -52,10 +61,8 @@ sound = Sound()
 
 {self._add_medium_motors()}
 
-motorB = {self.port_b}Motor(OUTPUT_B)
-motorC = {self.port_c}Motor(OUTPUT_C)
 # sensors
-{"TODO"}
+{self._add_sensors()}
         """
         self.code += imports_and_variables
 
