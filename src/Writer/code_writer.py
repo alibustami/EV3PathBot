@@ -2,9 +2,9 @@
 
 from src.configs import get_config
 from src.motors_extraction import motors_extraction
+from src.sensors_extraction import sensors_extraction
 
-robot_sensors = get_config("robot_sensors")
-sensors = list(robot_sensors.values())
+robot_sensors = list(sensors_extraction())
 
 
 class CodeEditor:
@@ -15,6 +15,8 @@ class CodeEditor:
         self.code = ""
         self.large_motors, self.medium_motors = motors_extraction()
         self.robot_motors = get_config("robot_motors")
+        self.robot_sensors = sensors_extraction()
+        self.robot_sensors_types = list(sensors_extraction())
         self.port_a = self.robot_motors["port_A"].capitalize()
         self.port_b = self.robot_motors["port_B"].capitalize()
         self.port_c = self.robot_motors["port_C"].capitalize()
@@ -41,10 +43,10 @@ motorD = {self.pord_d}Motor(OUTPUT_D)
 motorB = {self.port_b}Motor(OUTPUT_B)
 motorC = {self.port_c}Motor(OUTPUT_C)
 # sensors
-gyro = GyroSensor(INPUT_2)
-color_med = ColorSensor(INPUT_3)
-color_right = ColorSensor(INPUT_4)
-color_left = ColorSensor(INPUT_1)
+{self.robot_sensors_types[0]} = {self.robot_sensors_types[0][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[0]]})
+{self.robot_sensors_types[1]} = {self.robot_sensors_types[1][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[1]]})
+{self.robot_sensors_types[2]} = {self.robot_sensors_types[2][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[2]]})
+{self.robot_sensors_types[3]} = {self.robot_sensors_types[3][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[3]]})
         """
         self.code += imports_and_variables
 
@@ -113,3 +115,9 @@ def on_for_degrees_with_correction (
 
             # Write the code string
             file.write(self.code)
+
+
+editor = CodeEditor()
+editor.add_imports_and_variables()
+editor.add_function()
+editor.write_code("my_code.py")
