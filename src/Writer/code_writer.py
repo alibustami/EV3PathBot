@@ -14,13 +14,23 @@ class CodeEditor:
         """Class Constructor."""
         self.code = ""
         self.large_motors, self.medium_motors = motors_extraction()
-        self.robot_motors = get_config("robot_motors")
         self.robot_sensors = sensors_extraction()
-        self.robot_sensors_types = list(sensors_extraction())
-        self.port_a = self.robot_motors["port_A"].capitalize()
-        self.port_b = self.robot_motors["port_B"].capitalize()
-        self.port_c = self.robot_motors["port_C"].capitalize()
-        self.pord_d = self.robot_motors["port_D"].capitalize()
+
+    def _add_medium_motors(self):
+        medium_motors_import = ""
+        for i in range(len(self.medium_motors)):
+            medium_motors_import += (
+                f"motor{self.medium_motors[i]} = MediumMotor(OUTPUT_{self.medium_motors[i]})\n"
+            )
+        return medium_motors_import
+
+    def _add_large_motors(self):
+        large_motors_import = ""
+        for i in range(len(self.large_motors)):
+            large_motors_import += (
+                f"motor{self.large_motors[i]} = LargeMotor(OUTPUT_{self.large_motors[i]})\n"
+            )
+        return large_motors_import
 
     def add_imports_and_variables(self) -> None:
         """Add imports and variables to the code."""
@@ -37,16 +47,15 @@ ev3 = ev3dev2
 button = Button()
 sound = Sound()
 
-motorA = {self.port_a}Motor(OUTPUT_A)
-motorD = {self.pord_d}Motor(OUTPUT_D)
+# motors
+{self._add_large_motors()}
+
+{self._add_medium_motors()}
 
 motorB = {self.port_b}Motor(OUTPUT_B)
 motorC = {self.port_c}Motor(OUTPUT_C)
 # sensors
-{self.robot_sensors_types[0]} = {self.robot_sensors_types[0][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[0]]})
-{self.robot_sensors_types[1]} = {self.robot_sensors_types[1][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[1]]})
-{self.robot_sensors_types[2]} = {self.robot_sensors_types[2][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[2]]})
-{self.robot_sensors_types[3]} = {self.robot_sensors_types[3][:-2].capitalize()}Sensor({self.robot_sensors[self.robot_sensors_types[3]]})
+{"TODO"}
         """
         self.code += imports_and_variables
 
