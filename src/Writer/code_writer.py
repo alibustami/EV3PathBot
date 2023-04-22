@@ -45,12 +45,21 @@ class CodeEditor:
         """Add imports and variables to the code."""
         imports_and_variables = f"""
 from time import sleep
+
 import ev3dev2
-from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B,OUTPUT_C, OUTPUT_D, SpeedDPS, MediumMotor
+from ev3dev2.button import Button
+from ev3dev2.motor import (
+    OUTPUT_A,
+    OUTPUT_B,
+    OUTPUT_C,
+    OUTPUT_D,
+    LargeMotor,
+    MediumMotor,
+    SpeedDPS,
+)
 from ev3dev2.sensor import INPUT_1, INPUT_4, INPUT_3,INPUT_2
 from ev3dev2.sensor.lego import GyroSensor, ColorSensor
-from ev3dev2.button import Button
-from ev3dev2.sound import Sound\n\n
+from ev3dev2.sound import Sound\n
 # brain
 ev3 = ev3dev2
 button = Button()
@@ -63,29 +72,27 @@ sound = Sound()
 
 # sensors
 {self._add_sensors()}
+
         """
         self.code += imports_and_variables
 
     def add_function(self) -> None:
         """Add a function to the code."""
         function_code = f"""
-def on_for_degrees_with_correction (
-    speed: int,
-    degrees: int,
-    brake: bool,
-    correction_factor: int = 0,
-    kp={get_config("pid_constants.kp")}):
+def on_for_degrees_with_correction(
+    speed: int, degrees: int, brake: bool, correction_factor: int = 0, kp={get_config("pid_constants.kp")}
+):
     motor{self.large_motors[0]}.reset()
     motor{self.large_motors[1]}.reset()
-    motor{self.large_motors[0]}.on_for_degrees(speed=SpeedDPS(speed), degrees= degrees, brake=brake, block=False)
-    motor{self.large_motors[1]}.on_for_degrees(speed=SpeedDPS(speed), degrees= degrees, brake=brake, block=True)
-    error{self.large_motors[0]} =  100
-    error{self.large_motors[1]} =  100
+    motor{self.large_motors[0]}.on_for_degrees(speed=SpeedDPS(speed), degrees=degrees, brake=brake, block=False)
+    motor{self.large_motors[1]}.on_for_degrees(speed=SpeedDPS(speed), degrees=degrees, brake=brake, block=True)
+    error{self.large_motors[0]} = 100
+    error{self.large_motors[1]} = 100
 
     while abs(error{self.large_motors[0]}) > correction_factor or abs(error{self.large_motors[1]}) > correction_factor:
         if degrees > 0:
-            error{self.large_motors[0]} =  -motor{self.large_motors[0]}.position + degrees
-            error{self.large_motors[1]} =  -motor{self.large_motors[1]}.position + degrees
+            error{self.large_motors[0]} = -motor{self.large_motors[0]}.position + degrees
+            error{self.large_motors[1]} = -motor{self.large_motors[1]}.position + degrees
             if abs(error{self.large_motors[0]}) > correction_factor:
                 motor{self.large_motors[0]}.on(SpeedDPS(error{self.large_motors[0]} * kp))
             else:
@@ -97,8 +104,8 @@ def on_for_degrees_with_correction (
                 motor{self.large_motors[1]}.stop()
 
         else:
-            error{self.large_motors[0]} =  motor{self.large_motors[0]}.position - degrees
-            error{self.large_motors[1]} =  motor{self.large_motors[1]}.position - degrees
+            error{self.large_motors[0]} = motor{self.large_motors[0]}.position - degrees
+            error{self.large_motors[1]} = motor{self.large_motors[1]}.position - degrees
             if abs(error{self.large_motors[0]}) > correction_factor:
                 motor{self.large_motors[0]}.on(SpeedDPS(-error{self.large_motors[0]} * kp))
             else:
