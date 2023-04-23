@@ -55,9 +55,10 @@ class CodeEditor:
 
     def add_imports_and_variables(self) -> None:
         """Add imports and variables to the code."""
-        for i in self.robot_sensors:
-            if i[:-2].lower() == "gyro":
-                self.gyro = i
+        for sensor in self.robot_sensors:
+            if "gyro" in sensor:
+                self.gyro = sensor
+                break
         imports_and_variables = f"""
 from time import sleep
 
@@ -183,12 +184,10 @@ button.wait_for_pressed(['enter'])
 {self.gyro}.reset()
 print({self.gyro}.angle)
 """
-        print(points)
         for i in range(len(points["x"])):
             main_code += f"""
 #move_{i+1}"""
 
-            print(i)
             block: bool
             if points["additional_motors_mode"][i] == "S":
                 block = True
@@ -198,21 +197,21 @@ print({self.gyro}.angle)
                 if points["angles_difference"][i] == 0:
                     main_code += f"""
 on_for_degrees_with_correction(speed= 400, degrees= {points['distance_degrees'][i]}, brake= True,block= {block}, kp={get_config("pid_constants.kp")})
-motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points['A'][i]}, block=True)
-motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points['D'][i]}, block=False)
+motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=True)
+motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=False)
 """
                 elif points["angles_difference"][i] != 0:
                     main_code += f"""
 PID_turn(set_point={points["angle"][i+1]}, block={block})
-motorA.on_for_degrees(SpeedDPS(500), degrees={points["A"][i]}, block=False)
-motorD.on_for_degrees(SpeedDPS(500), degrees={points["D"][i]}, block=True)
+motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=False)
+motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=True)
 """
 
             else:
                 main_code += f"""
 PID_turn(set_point={points["angle"][-1]}, block={block})
-motorA.on_for_degrees(SpeedDPS(500), degrees={points["A"][-1]}, block=False)
-motorD.on_for_degrees(SpeedDPS(500), degrees={points["D"][-1]}, block=True)
+motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][-1]}, block=False)
+motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][-1]}, block=True)
 """
 
         self.code += main_code
