@@ -43,6 +43,9 @@ class CodeEditor:
 
     def add_imports_and_variables(self) -> None:
         """Add imports and variables to the code."""
+        for i in self.robot_sensors:
+            if i[:-2].lower() == "gyro":
+                self.gyro = i
         imports_and_variables = f"""
 from time import sleep
 
@@ -117,8 +120,49 @@ def on_for_degrees_with_correction(
                 motor{self.large_motors[1]}.stop()
     print('{self.large_motors[0]} = ' + str(motor{self.large_motors[0]}.position))
     print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n
+def PID_turn(
+    set_point: int,
+    direction = False,
+    reset = False,
+    kp ={get_config("pid_constants.kp")}) :
+
+    motor{self.large_motors[0]}.reset()
+    motor{self.large_motors[1]}.reset()
+    if reset:
+        sleep(0.1)
+        {self.gyro}.reset()
+        sleep(0.1)
+
+    if direction:
+        while {self.gyro}.angle!=set_point:
+            current_value = {self.gyro}.angle
+            error = set_point - current_value
+            correcting_speed = error*kp
+            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False)
+            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False)
+        motor{self.large_motors[0]}.stop()
+        motor{self.large_motors[1]}.stop()
+    else:
+        while {self.gyro}.angle!=set_point:
+            current_value = {self.gyro}.angle
+            error = set_point - current_value
+            correcting_speed = error*kp
+            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False)
+            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False)
+        motor{self.large_motors[0]}.stop()
+        motor{self.large_motors[1]}.stop()
+    print('gyro angle: ' + str({self.gyro}.angle))
         """
         self.code += function_code
+
+    def write_main_code(self, points: dict) -> None:
+        """Write the main code from the points.
+
+        Parameters
+        ----------
+        points : dict
+            Point dictionary.
+        """
 
     def write_code(self, filename: str) -> None:
         """Write the code to a file.
