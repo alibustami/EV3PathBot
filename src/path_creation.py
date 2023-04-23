@@ -14,7 +14,7 @@ def create_path(
     additional_motor_1: List[int],
     additional_motor_2: List[int],
     additional_motors_mode: List[chr],
-    robot_speed_dps: list[int],
+    robot_speed_dps: List[int],
 ) -> dict:
     """Create the path file.
 
