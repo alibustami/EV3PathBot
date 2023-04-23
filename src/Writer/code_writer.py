@@ -1,9 +1,21 @@
 """This module contains the code writer."""
 
 from src.configs import get_config
+from src.GUIs.main_screen import run
 from src.motors_extraction import motors_extraction
+from src.path_creation import create_path
 from src.sensors_extraction import sensors_extraction
 
+(
+    robot_positions,
+    robot_angles,
+    additional_motor_1,
+    additional_motor_2,
+    additional_motors_mode,
+) = run()
+point = create_path(
+    robot_positions, robot_angles, additional_motor_1, additional_motor_2, additional_motors_mode
+)
 robot_sensors = list(sensors_extraction())
 
 
@@ -83,12 +95,12 @@ sound = Sound()
         """Add a function to the code."""
         function_code = f"""
 def on_for_degrees_with_correction(
-    speed: int, degrees: int, brake: bool, correction_factor: int = 0, kp={get_config("pid_constants.kp")}
+    speed: int, degrees: int, brake: bool,block: bool, correction_factor: int = 0, kp={get_config("pid_constants.kp")}
 ):
     motor{self.large_motors[0]}.reset()
     motor{self.large_motors[1]}.reset()
     motor{self.large_motors[0]}.on_for_degrees(speed=SpeedDPS(speed), degrees=degrees, brake=brake, block=False)
-    motor{self.large_motors[1]}.on_for_degrees(speed=SpeedDPS(speed), degrees=degrees, brake=brake, block=True)
+    motor{self.large_motors[1]}.on_for_degrees(speed=SpeedDPS(speed), degrees=degrees, brake=brake, block=block)
     error{self.large_motors[0]} = 100
     error{self.large_motors[1]} = 100
 
@@ -122,6 +134,7 @@ def on_for_degrees_with_correction(
     print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n
 def PID_turn(
     set_point: int,
+    block: bool,
     direction = False,
     reset = False,
     kp ={get_config("pid_constants.kp")}) :
@@ -138,8 +151,8 @@ def PID_turn(
             current_value = {self.gyro}.angle
             error = set_point - current_value
             correcting_speed = error*kp
-            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False)
-            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False)
+            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
+            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=block)
         motor{self.large_motors[0]}.stop()
         motor{self.large_motors[1]}.stop()
     else:
@@ -147,12 +160,12 @@ def PID_turn(
             current_value = {self.gyro}.angle
             error = set_point - current_value
             correcting_speed = error*kp
-            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False)
-            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False)
+            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
+            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=block)
         motor{self.large_motors[0]}.stop()
         motor{self.large_motors[1]}.stop()
     print('gyro angle: ' + str({self.gyro}.angle))
-        """
+    """
         self.code += function_code
 
     def write_main_code(self, points: dict) -> None:
@@ -163,6 +176,46 @@ def PID_turn(
         points : dict
             Point dictionary.
         """
+        main_code = ""
+        main_code += f"""
+sound.beep()
+button.wait_for_pressed(['enter'])
+{self.gyro}.reset()
+print({self.gyro}.angle)
+"""
+        print(points)
+        for i in range(len(points["x"])):
+            main_code += f"""
+#move_{i+1}"""
+
+            print(i)
+            block: bool
+            if points["additional_motors_mode"][i] == "S":
+                block = True
+            elif points["additional_motors_mode"][i] == "P":
+                block = False
+            if i <= (len(point["angles_difference"]) - 1):
+                if points["angles_difference"][i] == 0:
+                    main_code += f"""
+on_for_degrees_with_correction(speed= 400, degrees= {points['distance_degrees'][i]}, brake= True,block= {block}, kp={get_config("pid_constants.kp")})
+motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points['A'][i]}, block=True)
+motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points['D'][i]}, block=False)
+"""
+                elif points["angles_difference"][i] != 0:
+                    main_code += f"""
+PID_turn(set_point={points["angle"][i+1]}, block={block})
+motorA.on_for_degrees(SpeedDPS(500), degrees={points["A"][i]}, block=False)
+motorD.on_for_degrees(SpeedDPS(500), degrees={points["D"][i]}, block=True)
+"""
+
+            else:
+                main_code += f"""
+PID_turn(set_point={points["angle"][-1]}, block={block})
+motorA.on_for_degrees(SpeedDPS(500), degrees={points["A"][-1]}, block=False)
+motorD.on_for_degrees(SpeedDPS(500), degrees={points["D"][-1]}, block=True)
+"""
+
+        self.code += main_code
 
     def write_code(self, filename: str) -> None:
         """Write the code to a file.
@@ -187,4 +240,5 @@ def PID_turn(
 editor = CodeEditor()
 editor.add_imports_and_variables()
 editor.add_function()
+editor.write_main_code(point)
 editor.write_code("my_code.py")

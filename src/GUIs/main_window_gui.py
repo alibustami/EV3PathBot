@@ -10,11 +10,11 @@ from src.configs import get_config
 from src.GUIs.key_logger import keylogger
 from src.GUIs.mouse_logger import mouselogger
 
-robot_length = get_config("robot_dimensions.length")
-robot_width = get_config("robot_dimensions.width")
+robot_length = get_config("robot_dimensions.length_x")
+robot_width = get_config("robot_dimensions.width_y")
 
-mat_length = get_config("mat_dimensions.length")
-mat_width = get_config("mat_dimensions.width")
+mat_length = get_config("mat_dimensions.length_x")
+mat_width = get_config("mat_dimensions.width_y")
 
 if not robot_length or not robot_width:
     raise ValueError("Robot length or width is not defined in the config file.")
