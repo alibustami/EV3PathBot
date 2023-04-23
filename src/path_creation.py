@@ -59,6 +59,7 @@ def create_path(
         positions[motor_1].append(additional_motor_1[i])
         positions[motor_2].append(additional_motor_2[i])
         positions["additional_motors_mode"].append(additional_motors_mode[i])
+        positions["speed"].append(robot_speed_dps[i])
 
     for i in range(len(positions["x"]) - 1):
         p1 = (positions["x"][i], positions["y"][i])
