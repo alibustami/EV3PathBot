@@ -74,8 +74,8 @@ from ev3dev2.motor import (
     MediumMotor,
     SpeedDPS,
 )
-from ev3dev2.sensor import INPUT_1, INPUT_4, INPUT_3,INPUT_2
-from ev3dev2.sensor.lego import GyroSensor, ColorSensor
+from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_3, INPUT_4
+from ev3dev2.sensor.lego import ColorSensor, GyroSensor
 from ev3dev2.sound import Sound\n
 # brain
 ev3 = ev3dev2
@@ -89,7 +89,6 @@ sound = Sound()
 
 # sensors
 {self._add_sensors()}
-
         """
         self.code += imports_and_variables
 
@@ -97,7 +96,7 @@ sound = Sound()
         """Add a function to the code."""
         function_code = f"""
 def on_for_degrees_with_correction(
-    speed: int, degrees: int, brake: bool,block: bool, correction_factor: int = 0, kp={get_config("pid_constants.kp")}
+    speed: int, degrees: int, brake: bool, block: bool, correction_factor: int = 0, kp={get_config("pid_constants.kp")}
 ):
     motor{self.large_motors[0]}.reset()
     motor{self.large_motors[1]}.reset()
@@ -133,13 +132,13 @@ def on_for_degrees_with_correction(
             else:
                 motor{self.large_motors[1]}.stop()
     print('{self.large_motors[0]} = ' + str(motor{self.large_motors[0]}.position))
-    print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n
+    print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n\n
 def PID_turn(
     set_point: int,
     block: bool,
     direction = False,
     reset = False,
-    kp ={get_config("pid_constants.kp")}) :
+    kp ={get_config("pid_constants.kp")}):
 
     motor{self.large_motors[0]}.reset()
     motor{self.large_motors[1]}.reset()
@@ -149,19 +148,19 @@ def PID_turn(
         sleep(0.1)
 
     if direction:
-        while {self.gyro}.angle!=set_point:
+        while {self.gyro}.angle != set_point:
             current_value = {self.gyro}.angle
             error = set_point - current_value
-            correcting_speed = error*kp
+            correcting_speed = error * kp
             motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
             motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=block)
         motor{self.large_motors[0]}.stop()
         motor{self.large_motors[1]}.stop()
     else:
-        while {self.gyro}.angle!=set_point:
+        while {self.gyro}.angle != set_point:
             current_value = {self.gyro}.angle
             error = set_point - current_value
-            correcting_speed = error*kp
+            correcting_speed = error * kp
             motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
             motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=block)
         motor{self.large_motors[0]}.stop()
@@ -187,8 +186,7 @@ print({self.gyro}.angle)
 """
         for i in range(len(points["x"])):
             main_code += f"""
-#move_{i+1}"""
-
+# move_{i+1}"""
             block: bool
             if points["additional_motors_mode"][i] == "S":
                 block = True
@@ -197,7 +195,7 @@ print({self.gyro}.angle)
             if i <= (len(point["angles_difference"]) - 1):
                 if points["angles_difference"][i] == 0:
                     main_code += f"""
-on_for_degrees_with_correction(speed= 400, degrees= {points['distance_degrees'][i]}, brake= True,block= {block}, kp={get_config("pid_constants.kp")})
+on_for_degrees_with_correction(speed=400, degrees={points['distance_degrees'][i]}, brake=True, block={block}, kp={get_config("pid_constants.kp")})
 motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=True)
 motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=False)
 """
