@@ -38,7 +38,7 @@ def create_path(
     _, meduim_motors = motors_extraction()
     motor_1 = meduim_motors[0]
     motor_2 = meduim_motors[1]
-    posisitions: dict = {
+    positions: dict = {
         "x": [],
         "y": [],
         "distance_degrees": [],
@@ -49,29 +49,29 @@ def create_path(
         "additional_motors_mode": [],
     }
     for i in range(len(robot_positions)):
-        posisitions["x"].append(int(robot_positions[i][0][0]))
-        posisitions["y"].append(int(robot_positions[i][0][1]))
-        posisitions["angle"].append(angles[i])
-        posisitions[motor_1].append(additional_motor_1[i])
-        posisitions[motor_2].append(additional_motor_2[i])
-        posisitions["additional_motors_mode"].append(additional_motors_mode[i])
+        positions["x"].append(int(robot_positions[i][0][0]))
+        positions["y"].append(int(robot_positions[i][0][1]))
+        positions["angle"].append(angles[i])
+        positions[motor_1].append(additional_motor_1[i])
+        positions[motor_2].append(additional_motor_2[i])
+        positions["additional_motors_mode"].append(additional_motors_mode[i])
 
-    for i in range(len(posisitions["x"]) - 1):
-        p1 = (posisitions["x"][i], posisitions["y"][i])
-        p2 = (posisitions["x"][i + 1], posisitions["y"][i + 1])
+    for i in range(len(positions["x"]) - 1):
+        p1 = (positions["x"][i], positions["y"][i])
+        p2 = (positions["x"][i + 1], positions["y"][i + 1])
 
         distance = math.dist(p1, p2)
 
-        posisitions["distance_degrees"].append((distance))
+        positions["distance_degrees"].append((distance))
 
-    for i in range(len(posisitions["angle"]) - 1):
-        an1 = posisitions["angle"][i]
-        an2 = posisitions["angle"][i + 1]
+    for i in range(len(positions["angle"]) - 1):
+        an1 = positions["angle"][i]
+        an2 = positions["angle"][i + 1]
         angle = an2 - an1
 
-        posisitions["angles_difference"].append((angle))
+        positions["angles_difference"].append((angle))
 
-    posisitions["distance_degrees"] = convert_pixels_to_degrees(
-        np.array(posisitions["distance_degrees"])
+    positions["distance_degrees"] = convert_pixels_to_degrees(
+        np.array(positions["distance_degrees"])
     )
-    return posisitions
+    return positions
