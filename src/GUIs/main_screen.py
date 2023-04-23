@@ -37,6 +37,10 @@ gyro_positive_direction: str = get_config("robot_movement_configurations.gyro_po
 if large_motors_positive_direction is None or gyro_positive_direction is None:
     raise ValueError("Robot movement configurations are not defined in the config file.")
 
+speed_steps: int = int(get_config("steps.speed_steps"))
+if not speed_steps:
+    raise ValueError("Speed steps configurations are not defined in the config file.")
+
 
 def run(image: Optional[np.ndarray] = None):
     """Run the main window GUI."""
@@ -59,12 +63,14 @@ def run(image: Optional[np.ndarray] = None):
     theta: int = 0
     additional_motor_1: int = 0
     additional_motor_2: int = 0
+    speed_dps: int = 500
     saved_boxes: list = []
     saved_theta: list = []
     additional_motor_1_list: list = []
     additional_motor_2_list: list = []
     additional_motors_mode_list: list = []
     additional_motors_mode: chr = "S"
+    robot_speed_dps_list: list = []
     while True:
         image = original_image.copy()
         if saved_boxes:
@@ -123,6 +129,15 @@ def run(image: Optional[np.ndarray] = None):
                     image,
                     additional_motors_mode_list[i],
                     (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 45),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 0, 0),
+                    1,
+                )
+                cv2.putText(
+                    image,
+                    "speed: " + str(robot_speed_dps_list[i]),
+                    (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 60),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
                     (0, 0, 0),
@@ -223,6 +238,15 @@ def run(image: Optional[np.ndarray] = None):
             (0, 0, 0),
             1,
         )
+        cv2.putText(
+            image,
+            "speed" + ": " + str(speed_dps),
+            (int(rotated_box[0][0]), int(rotated_box[0][1]) + 60),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 0, 0),
+            1,
+        )
         if large_motors_positive_direction:
             cv2.circle(
                 image,
@@ -268,6 +292,7 @@ def run(image: Optional[np.ndarray] = None):
             additional_motor_1_list.append(additional_motor_1)
             additional_motor_2_list.append(additional_motor_2)
             additional_motors_mode_list.append(additional_motors_mode)
+            robot_speed_dps_list.append(speed_dps)
             additional_motor_1: int = 0
             additional_motor_2: int = 0
         elif key == ord("z"):
@@ -282,6 +307,12 @@ def run(image: Optional[np.ndarray] = None):
             additional_motors_mode: chr = "P"
         elif key == ord("t"):
             additional_motors_mode: chr = "S"
+        elif key == ord("m"):
+            if speed_dps < 1000:
+                speed_dps += speed_steps
+        elif key == ord("n"):
+            if speed_dps > 0:
+                speed_dps -= speed_steps
 
     cv2.destroyAllWindows()
 
@@ -291,4 +322,5 @@ def run(image: Optional[np.ndarray] = None):
         additional_motor_1_list,
         additional_motor_2_list,
         additional_motors_mode_list,
+        robot_speed_dps_list,
     )
