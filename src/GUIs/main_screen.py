@@ -313,6 +313,7 @@ def run(image: Optional[np.ndarray] = None):
         elif key == ord("n"):
             if speed_dps > 0:
                 speed_dps -= speed_steps
+                # TODO: raise warining if speed = 0
 
     cv2.destroyAllWindows()
 
