@@ -1,4 +1,5 @@
 """This module contains the code writer."""
+import os
 
 from src.configs import get_config
 from src.GUIs.main_screen import run
@@ -216,19 +217,19 @@ motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.
 
         self.code += main_code
 
-    def write_code(self, filename: str) -> None:
-        """Write the code to a file.
+    def write_code(self):
+        """Write the code to a file."""
+        if os.listdir("ev3dev-codes"):
+            for afile in sorted(os.listdir("ev3dev-codes"), reverse=True):
+                if afile.endswith(".py"):
+                    afile = afile[:-3]
+                    file_name_list = afile.split("_")
+                    file_number: int = int(file_name_list[-1])
+                    break
+        else:
+            file_number: int = 0
 
-        Parameters
-        ----------
-        filename : str
-            The name of the file to write the code to.
-
-        Returns
-        -------
-        None
-        """
-        with open(filename, "w") as file:
+        with open(os.path.join("ev3dev-codes", f"code_{file_number+1}.py"), "w") as file:
             # Write the imports
             file.write("#!/usr/bin/env python3\n\n")
 
@@ -240,4 +241,4 @@ editor = CodeEditor()
 editor.add_imports_and_variables()
 editor.add_function()
 editor.write_main_code(point)
-editor.write_code("my_code.py")
+editor.write_code()
