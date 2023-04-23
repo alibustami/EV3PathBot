@@ -2,22 +2,8 @@
 import os
 
 from src.configs import get_config
-from src.GUIs.main_screen import run
 from src.motors_extraction import motors_extraction
-from src.path_creation import create_path
 from src.sensors_extraction import sensors_extraction
-
-(
-    robot_positions,
-    robot_angles,
-    additional_motor_1,
-    additional_motor_2,
-    additional_motors_mode,
-) = run()
-point = create_path(
-    robot_positions, robot_angles, additional_motor_1, additional_motor_2, additional_motors_mode
-)
-robot_sensors = list(sensors_extraction())
 
 
 class CodeEditor:
@@ -192,7 +178,7 @@ print({self.gyro}.angle)
                 block = True
             elif points["additional_motors_mode"][i] == "P":
                 block = False
-            if i <= (len(point["angles_difference"]) - 1):
+            if i <= (len(points["angles_difference"]) - 1):
                 if points["angles_difference"][i] == 0:
                     main_code += f"""
 on_for_degrees_with_correction(speed=400, degrees={points['distance_degrees'][i]}, brake=True, block={block}, kp={get_config("pid_constants.kp")})
@@ -217,7 +203,7 @@ motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.
 
     def write_code(self):
         """Write the code to a file."""
-        if os.listdir("ev3dev-codes"):
+        if len(os.listdir("ev3dev-codes")) > 1:
             for afile in sorted(os.listdir("ev3dev-codes"), reverse=True):
                 if afile.endswith(".py"):
                     afile = afile[:-3]
@@ -234,9 +220,15 @@ motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.
             # Write the code string
             file.write(self.code)
 
+    def __call__(self, point: dict):
+        """Call function for the class.
 
-editor = CodeEditor()
-editor.add_imports_and_variables()
-editor.add_function()
-editor.write_main_code(point)
-editor.write_code()
+        Parameters
+        ---------
+        point: dict
+            path dictionary
+        """
+        self.add_imports_and_variables()
+        self.add_function()
+        self.write_main_code(point)
+        self.write_code()
