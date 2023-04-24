@@ -33,8 +33,6 @@ pid_constants:
   kd:
 
 
-log_file_append: False
-
 steps:
   delta_theta:
   delta_pixels:
