@@ -39,6 +39,7 @@ steps:
   delta_theta:
   delta_pixels:
   additional_motors_steps:
+  speed_steps:
 
 robot_movement_configurations:
   # if the LARGE motors positive movement is forward, bool (True, False)

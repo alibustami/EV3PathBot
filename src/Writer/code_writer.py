@@ -181,7 +181,7 @@ print({self.gyro}.angle)
             if i <= (len(points["angles_difference"]) - 1):
                 if points["angles_difference"][i] == 0:
                     main_code += f"""
-on_for_degrees_with_correction(speed=400, degrees={points['distance_degrees'][i]}, brake=True, block={block}, kp={get_config("pid_constants.kp")})
+on_for_degrees_with_correction(speed={points['speed'][i]}, degrees={points['distance_degrees'][i]}, brake=True, block={block}, kp={get_config("pid_constants.kp")})
 motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=True)
 motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=False)
 """
