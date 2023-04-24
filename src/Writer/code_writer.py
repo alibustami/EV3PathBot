@@ -1,9 +1,17 @@
 """This module contains the code writer."""
+import logging
 import os
 
 from src.configs import get_config
 from src.motors_extraction import motors_extraction
 from src.sensors_extraction import sensors_extraction
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: on file %(filename)s, on line %(lineno)d: %(message)s",
+    filename="logs.log",
+    filemode="a",
+)
 
 
 class CodeEditor:
@@ -13,7 +21,9 @@ class CodeEditor:
         """Class Constructor."""
         self.code = ""
         self.large_motors, self.medium_motors = motors_extraction()
+        logging.info(f"large motors: {self.large_motors}")
         self.robot_sensors = sensors_extraction()
+        logging.info(f"robot sensors: {self.robot_sensors}")
 
     def _add_medium_motors(self):
         medium_motors_import = ""

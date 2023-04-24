@@ -1,12 +1,19 @@
 """This module constains the intro screen GUI."""
+import logging
 import os
 import tkinter as tk
 from tkinter import filedialog
 
 import cv2
 
-# from src.GUIs.main_window_gui import MainWindow
 from src.GUIs.main_screen import run
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: on file %(filename)s, on line %(lineno)d: %(message)s",
+    filename="logs.log",
+    filemode="a",
+)
 
 
 class IntroScreen(tk.Frame):
@@ -48,7 +55,7 @@ class IntroScreen(tk.Frame):
                     )
                     self.select_image_text.place(x=160, y=100)
                     self.continue_button = tk.Button(
-                        intro_screen,
+                        self.master,
                         text="Continue",
                         width=10,
                         height=2,
@@ -61,18 +68,21 @@ class IntroScreen(tk.Frame):
                         command=closew_window_and_open_main_window,
                     )
                     self.continue_button.place(x=315, y=300)
+                    logging.info(f"Image selected successfully, image path: {path_file}")
 
                 else:
                     self.select_image_text.configure(
                         text="Unable to open image",
                         fg="red",
                     )
+                    logging.error(f"Unable to open image, image path: {path_file}")
             except Exception as e:
                 print(e)
                 self.select_image_text.configure(
                     text="Unable to open image",
                     fg="red",
                 )
+                logging.error(f"Unable to open image, image path: {path_file}")
 
         def _create_title_image(self):
             self.image = tk.PhotoImage(
@@ -83,7 +93,7 @@ class IntroScreen(tk.Frame):
 
         def _add_welcoming_text(self):
             self.select_image_text = tk.Label(
-                intro_screen,
+                self.master,
                 text="Select an image to start",
                 font=("Calibri", 40),
                 fg="white",
@@ -97,7 +107,7 @@ class IntroScreen(tk.Frame):
             )
             self.open_folder_image = self.open_folder_image.subsample(5)
             self.open_folder_button = tk.Button(
-                intro_screen,
+                self.master,
                 image=self.open_folder_image,
                 command=open_file_dialog,
                 bd=0,
@@ -112,9 +122,3 @@ class IntroScreen(tk.Frame):
         _create_title_image(self)
         _add_welcoming_text(self)
         _open_file_image(self)
-
-
-if __name__ == "__main__":
-    intro_screen = tk.Tk()
-    app = IntroScreen(master=intro_screen)
-    app.mainloop()
