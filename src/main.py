@@ -4,7 +4,7 @@ import logging
 from src.configs import get_config
 from src.GUIs.main_screen import run
 from src.path_creation import create_path
-from src.writer.code_writer import CodeEditor
+from src.Writer.code_writer import CodeEditor
 
 log_file_append = get_config("log_file_append")
 if not log_file_append:
