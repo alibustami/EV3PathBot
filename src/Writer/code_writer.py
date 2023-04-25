@@ -81,7 +81,6 @@ sound = Sound()
 # motors
 {self._add_large_motors()}
 
-{self._add_medium_motors()}
 
 # sensors
 {self._add_sensors()}
@@ -131,8 +130,6 @@ def on_for_degrees_with_correction(
     print('{self.large_motors[1]} = ' + str(motor{self.large_motors[1]}.position))\n\n
 def PID_turn(
     set_point: int,
-    block: bool,
-    direction = False,
     reset = False,
     kp ={get_config("pid_constants.kp")}):
 
@@ -143,24 +140,15 @@ def PID_turn(
         {self.gyro}.reset()
         sleep(0.1)
 
-    if direction:
-        while {self.gyro}.angle != set_point:
-            current_value = {self.gyro}.angle
-            error = set_point - current_value
-            correcting_speed = error * kp
-            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
-            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=block)
-        motor{self.large_motors[0]}.stop()
-        motor{self.large_motors[1]}.stop()
-    else:
-        while {self.gyro}.angle != set_point:
-            current_value = {self.gyro}.angle
-            error = set_point - current_value
-            correcting_speed = error * kp
-            motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
-            motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=block)
-        motor{self.large_motors[0]}.stop()
-        motor{self.large_motors[1]}.stop()
+    while {self.gyro}.angle != set_point:
+        current_value = {self.gyro}.angle
+        error = set_point - current_value
+        correcting_speed = error * kp
+        motor{self.large_motors[0]}.on(SpeedDPS(-correcting_speed), brake=False, block=False)
+        motor{self.large_motors[1]}.on(SpeedDPS(correcting_speed), brake=False, block=False)
+
+    motor{self.large_motors[0]}.stop()
+    motor{self.large_motors[1]}.stop()
     print('gyro angle: ' + str({self.gyro}.angle))
     """
         self.code += function_code
@@ -192,21 +180,21 @@ print({self.gyro}.angle)
                 if points["angles_difference"][i] == 0:
                     main_code += f"""
 on_for_degrees_with_correction(speed={points['speed'][i]}, degrees={points['distance_degrees'][i]}, brake=True, block={block}, kp={get_config("pid_constants.kp")})
-motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=True)
-motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=False)
+# motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=True)
+# motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=False)
 """
                 elif points["angles_difference"][i] != 0:
                     main_code += f"""
-PID_turn(set_point={points["angle"][i+1]}, block={block})
-motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=False)
-motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=True)
+PID_turn(set_point={points["angle"][i+1]})
+# motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][i]}, block=False)
+# motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][i]}, block=True)
 """
 
             else:
                 main_code += f"""
-PID_turn(set_point={points["angle"][-1]}, block={block})
-motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][-1]}, block=False)
-motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][-1]}, block=True)
+PID_turn(set_point={points["angle"][-1]})
+# motor{self.medium_motors[0]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[0]][-1]}, block=False)
+# motor{self.medium_motors[1]}.on_for_degrees(SpeedDPS(500), degrees={points[self.medium_motors[1]][-1]}, block=True)
 """
 
         self.code += main_code
