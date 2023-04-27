@@ -26,11 +26,12 @@ def motors_extraction() -> Tuple[List[chr], List[chr]]:
     medium_motors_list: list = []
 
     for port, motor in motors_dict.items():
-        if motor.lower() == "large":
-            large_motors_list.append(port.split("_")[1])
-        elif motor.lower() == "medium":
-            medium_motors_list.append(port.split("_")[1])
-        else:
-            raise ValueError(f"Invalid motor type: {motor}")
+        if motor:
+            if motor.lower() == "large":
+                large_motors_list.append(port.split("_")[1])
+            elif motor.lower() == "medium":
+                medium_motors_list.append(port.split("_")[1])
+            else:
+                raise ValueError(f"Invalid motor type: {motor}")
 
     return large_motors_list, medium_motors_list
