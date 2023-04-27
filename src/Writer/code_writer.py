@@ -81,6 +81,7 @@ sound = Sound()
 # motors
 {self._add_large_motors()}
 
+{self._add_medium_motors()}
 
 # sensors
 {self._add_sensors()}
