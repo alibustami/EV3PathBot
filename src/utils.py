@@ -7,10 +7,6 @@ from pydantic import BaseModel
 
 from src.configs import get_config
 
-log_file_append = get_config("log_file_append")
-if not log_file_append:
-    log_file_append = False
-
 logger = logging.getLogger(__name__)
 
 
