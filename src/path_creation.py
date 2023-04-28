@@ -38,9 +38,14 @@ def create_path(
     dict
         dictiorany of all the path markups.
     """
-    _, meduim_motors = motors_extraction()
-    motor_1 = meduim_motors[0]
-    motor_2 = meduim_motors[1]
+    _, medium_motors = motors_extraction()
+    if len(medium_motors) == 2:
+        motor_1, motor_2 = medium_motors
+    elif len(medium_motors) == 1:
+        motor_1 = medium_motors
+        motor_2 = "X"
+    else:
+        motor_1 = motor_2 = "X"
     positions: dict = {
         "x": [],
         "y": [],
