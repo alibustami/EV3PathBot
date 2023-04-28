@@ -36,9 +36,3 @@ def convert_pixels_to_degrees(distance_pixels_array: np.array) -> List[int]:
     distance_degrees_array = np.around(distance_degrees_array)
     distance_degrees_array = distance_degrees_array.astype(int)
     return list(distance_degrees_array)
-
-
-if __name__ == "__main__":
-    x = np.array([100, 200, 300])
-    foo = convert_pixels_to_degrees(x)
-    print(foo)
