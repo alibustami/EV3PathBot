@@ -58,7 +58,13 @@ if not speed_steps:
 def run(image: Optional[np.ndarray] = None):
     """Run the main window GUI."""
     _, medium_motors_list = motors_extraction()
-    first_additional_motor, second_additional_motor = medium_motors_list
+    if len(medium_motors_list) == 2:
+        first_additional_motor, second_additional_motor = medium_motors_list
+    elif len(medium_motors_list) == 1:
+        first_additional_motor = medium_motors_list
+        second_additional_motor = "X"
+    else:
+        first_additional_motor = second_additional_motor = "X"
     logging.info(
         f"defined first additional motor: {first_additional_motor} and second additional motor: {second_additional_motor}"
     )
