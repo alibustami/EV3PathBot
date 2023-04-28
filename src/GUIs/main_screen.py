@@ -1,4 +1,5 @@
 """This module contains the main window GUI."""
+import logging
 import os
 from typing import Optional
 
@@ -8,24 +9,32 @@ import numpy as np
 from src.configs import get_config
 from src.converters import stud_to_pixel
 from src.motors_extraction import motors_extraction
-from src.path_creation import create_path
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: on file %(filename)s, on line %(lineno)d: %(message)s",
+    filename="logs.log",
+    filemode="a",
+)
 
 robot_length: int = int(get_config("robot_dimensions.length_x"))
 robot_width: int = int(get_config("robot_dimensions.width_y"))
-
+logging.info(f"defined robot length: {robot_length} studs and robot width: {robot_width} studs")
 if not robot_length or not robot_width:
     raise ValueError("Robot length or width is not defined in the config file.")
 
 mat_length: int = int(get_config("mat_dimensions.length_x"))
 mat_width: int = int(get_config("mat_dimensions.width_y"))
-
+logging.info(f"defined mat length (x-axis): {mat_length} mm and mat width (y-axis): {mat_width} mm")
 if not mat_length or not mat_width:
     raise ValueError("Mat length or width is not defined in the config file.")
 
 detla_theta: int = int(get_config("steps.delta_theta"))
 delta_pixels: int = int(get_config("steps.delta_pixels"))
 additional_motors_steps: int = int(get_config("steps.additional_motors_steps"))
-
+logging.info(
+    f"defined delta theta: {detla_theta} degrees, delta pixels: {delta_pixels} pixels and additional motors steps: {additional_motors_steps} steps"
+)
 if not detla_theta or not delta_pixels or not additional_motors_steps:
     raise ValueError("Steps are not defined in the config file.")
 
@@ -34,14 +43,31 @@ large_motors_positive_direction: str = get_config(
 )
 gyro_positive_direction: str = get_config("robot_movement_configurations.gyro_positive_direction")
 
+logging.info(
+    f"defined large motors positive direction: {large_motors_positive_direction} and gyro positive direction: {gyro_positive_direction}"
+)
 if large_motors_positive_direction is None or gyro_positive_direction is None:
     raise ValueError("Robot movement configurations are not defined in the config file.")
+
+speed_steps: int = int(get_config("steps.speed_steps"))
+logging.info(f"defined speed steps: {speed_steps}")
+if not speed_steps:
+    raise ValueError("Speed steps configurations are not defined in the config file.")
 
 
 def run(image: Optional[np.ndarray] = None):
     """Run the main window GUI."""
     _, medium_motors_list = motors_extraction()
-    first_additional_motor, second_additional_motor = medium_motors_list
+    if len(medium_motors_list) == 2:
+        first_additional_motor, second_additional_motor = medium_motors_list
+    elif len(medium_motors_list) == 1:
+        first_additional_motor = medium_motors_list
+        second_additional_motor = "X"
+    else:
+        first_additional_motor = second_additional_motor = "X"
+    logging.info(
+        f"defined first additional motor: {first_additional_motor} and second additional motor: {second_additional_motor}"
+    )
 
     if image is None:
         image_path: str = get_config("mat_image_path")
@@ -59,12 +85,14 @@ def run(image: Optional[np.ndarray] = None):
     theta: int = 0
     additional_motor_1: int = 0
     additional_motor_2: int = 0
+    speed_dps: int = 500
     saved_boxes: list = []
     saved_theta: list = []
     additional_motor_1_list: list = []
     additional_motor_2_list: list = []
     additional_motors_mode_list: list = []
     additional_motors_mode: chr = "S"
+    robot_speed_dps_list: list = []
     while True:
         image = original_image.copy()
         if saved_boxes:
@@ -123,6 +151,15 @@ def run(image: Optional[np.ndarray] = None):
                     image,
                     additional_motors_mode_list[i],
                     (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 45),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 0, 0),
+                    1,
+                )
+                cv2.putText(
+                    image,
+                    "speed: " + str(robot_speed_dps_list[i]),
+                    (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1]) + 60),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
                     (0, 0, 0),
@@ -223,6 +260,15 @@ def run(image: Optional[np.ndarray] = None):
             (0, 0, 0),
             1,
         )
+        cv2.putText(
+            image,
+            "speed" + ": " + str(speed_dps),
+            (int(rotated_box[0][0]), int(rotated_box[0][1]) + 60),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 0, 0),
+            1,
+        )
         if large_motors_positive_direction:
             cv2.circle(
                 image,
@@ -268,6 +314,7 @@ def run(image: Optional[np.ndarray] = None):
             additional_motor_1_list.append(additional_motor_1)
             additional_motor_2_list.append(additional_motor_2)
             additional_motors_mode_list.append(additional_motors_mode)
+            robot_speed_dps_list.append(speed_dps)
             additional_motor_1: int = 0
             additional_motor_2: int = 0
         elif key == ord("z"):
@@ -282,6 +329,12 @@ def run(image: Optional[np.ndarray] = None):
             additional_motors_mode: chr = "P"
         elif key == ord("t"):
             additional_motors_mode: chr = "S"
+        elif key == ord("m"):
+            if speed_dps < 1000:
+                speed_dps += speed_steps
+        elif key == ord("n"):
+            if speed_dps > 0:
+                speed_dps -= speed_steps
 
     cv2.destroyAllWindows()
 
@@ -291,4 +344,5 @@ def run(image: Optional[np.ndarray] = None):
         additional_motor_1_list,
         additional_motor_2_list,
         additional_motors_mode_list,
+        robot_speed_dps_list,
     )

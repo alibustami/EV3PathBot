@@ -1,9 +1,11 @@
 """This module contains the path creation code."""
+import math
 from typing import List
 
 import numpy as np
 
 from src.motors_extraction import motors_extraction
+from src.pixels_to_degrees_ratio import convert_pixels_to_degrees
 
 
 def create_path(
@@ -12,6 +14,7 @@ def create_path(
     additional_motor_1: List[int],
     additional_motor_2: List[int],
     additional_motors_mode: List[chr],
+    robot_speed_dps: List[int],
 ) -> dict:
     """Create the path file.
 
@@ -27,29 +30,58 @@ def create_path(
         The additional motor 2.
     additional_motors_mode : List[chr]
         The additional motors mode weather it is Parallel (P) or Series (S).
+    robot_speed_dps : List[int]
+        Robot speeds
 
     Returns
     -------
     dict
         dictiorany of all the path markups.
     """
-    _, meduim_motors = motors_extraction()
-    motor_1 = meduim_motors[0]
-    motor_2 = meduim_motors[1]
-    posisitions: dict = {
+    _, medium_motors = motors_extraction()
+    if len(medium_motors) == 2:
+        motor_1, motor_2 = medium_motors
+    elif len(medium_motors) == 1:
+        motor_1 = medium_motors
+        motor_2 = "X"
+    else:
+        motor_1 = motor_2 = "X"
+    positions: dict = {
         "x": [],
         "y": [],
+        "distance_degrees": [],
         "angle": [],
+        "angles_difference": [],
         motor_1: [],
         motor_2: [],
         "additional_motors_mode": [],
+        "speed": [],
     }
     for i in range(len(robot_positions)):
-        posisitions["x"].append(int(robot_positions[i][0][0]))
-        posisitions["y"].append(int(robot_positions[i][0][1]))
-        posisitions["angle"].append(angles[i])
-        posisitions[motor_1].append(additional_motor_1[i])
-        posisitions[motor_2].append(additional_motor_2[i])
-        posisitions["additional_motors_mode"].append(additional_motors_mode[i])
+        positions["x"].append(int(robot_positions[i][0][0]))
+        positions["y"].append(int(robot_positions[i][0][1]))
+        positions["angle"].append(angles[i])
+        positions[motor_1].append(additional_motor_1[i])
+        positions[motor_2].append(additional_motor_2[i])
+        positions["additional_motors_mode"].append(additional_motors_mode[i])
+        positions["speed"].append(robot_speed_dps[i])
 
-    return posisitions
+    for i in range(len(positions["x"]) - 1):
+        p1 = (positions["x"][i], positions["y"][i])
+        p2 = (positions["x"][i + 1], positions["y"][i + 1])
+
+        distance = math.dist(p1, p2)
+
+        positions["distance_degrees"].append((distance))
+
+    for i in range(len(positions["angle"]) - 1):
+        an1 = positions["angle"][i]
+        an2 = positions["angle"][i + 1]
+        angle = an2 - an1
+
+        positions["angles_difference"].append((angle))
+
+    positions["distance_degrees"] = convert_pixels_to_degrees(
+        np.array(positions["distance_degrees"])
+    )
+    return positions

@@ -27,7 +27,11 @@ class TestMotorsExtraction(unittest.TestCase):
             motors_extraction(), (expected_large_motors_list, expected_medium_motors_list)
         )
 
-    def test_motors_extraction_exception(self):
+    @patch(
+        "src.motors_extraction.get_config",
+        side_effect=lambda key: {} if key == "robot_motors" else None,
+    )
+    def test_motors_extraction_exception(self, *_):
         """test_motors_extraction_exception."""
         with self.assertRaises(Exception):
             motors_extraction()

@@ -20,17 +20,24 @@ robot_motors:
   port_C:
   port_D:
 
-robot sensors:
+robot_sensors:
   # one of (GYRO, COLOR)
   port_1:
   port_2:
   port_3:
   port_4:
 
+pid_constants:
+  kp:
+  ki:
+  kd:
+
+
 steps:
   delta_theta:
   delta_pixels:
   additional_motors_steps:
+  speed_steps:
 
 robot_movement_configurations:
   # if the LARGE motors positive movement is forward, bool (True, False)

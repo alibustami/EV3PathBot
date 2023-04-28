@@ -2,6 +2,7 @@
 import unittest
 from unittest.mock import patch
 
+import cv2
 import numpy as np
 
 from src.path_creation import create_path
@@ -11,7 +12,8 @@ class TestPathCreation(unittest.TestCase):
     """Unit testing for path creation module."""
 
     @patch("src.path_creation.motors_extraction", return_value=(None, ["A", "D"]))
-    def test_create_path(self, mock_motors_extraction):
+    @patch("src.path_creation.convert_pixels_to_degrees", return_value=[945, 476, 779, 556, 833])
+    def test_create_path(self, *_):
         """Test create path function."""
         robot_positions = np.array(
             [
@@ -41,6 +43,7 @@ class TestPathCreation(unittest.TestCase):
         additional_motor_1 = [0, -100, 0, 110, 0, 0]
         additional_motor_2 = [0, 0, 0, 0, 0, 0]
         additional_motors_mode = ["P", "P", "P", "S", "S", "S"]
+        robot_speed_dps = [500, 300, 300, 500, 300, 300]
         expected = {
             "x": [10, 10, 138, 348, 330, 250],
             "y": [685, 430, 421, 421, 570, 780],
@@ -48,9 +51,17 @@ class TestPathCreation(unittest.TestCase):
             "A": [0, -100, 0, 110, 0, 0],
             "D": [0, 0, 0, 0, 0, 0],
             "additional_motors_mode": ["P", "P", "P", "S", "S", "S"],
+            "angles_difference": [0, 90, 0, 111, 0],
+            "distance_degrees": [945, 476, 779, 556, 833],
+            "speed": [500, 300, 300, 500, 300, 300],
         }
 
         result = create_path(
-            robot_positions, angles, additional_motor_1, additional_motor_2, additional_motors_mode
+            robot_positions,
+            angles,
+            additional_motor_1,
+            additional_motor_2,
+            additional_motors_mode,
+            robot_speed_dps,
         )
         self.assertEqual(result, expected)

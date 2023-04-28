@@ -34,7 +34,8 @@ class TestConverters(unittest.TestCase):
         expected_mat_dims = (1143, 2020)
         self.assertEqual(extract_image_dims(), (expected_image_dims, expected_mat_dims))
 
-    def test_extract_image_dims_exception(self):
+    @patch("src.converters.get_config", return_value=None)
+    def test_extract_image_dims_exception(self, *_):
         """test_extract_image_dims_exception."""
         with self.assertRaises(Exception):
             extract_image_dims()
