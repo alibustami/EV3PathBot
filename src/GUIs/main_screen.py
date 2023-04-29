@@ -83,11 +83,13 @@ def run(image: Optional[np.ndarray] = None):
     image_height_y, image_width_x, _ = original_image.shape
     robot_top_left_corner = np.array([0, image_height_y - robot_width_y_pixels])
     theta: int = 0
+    displayed_theta: int = 0
     additional_motor_1: int = 0
     additional_motor_2: int = 0
     speed_dps: int = 500
     saved_boxes: list = []
     saved_theta: list = []
+    saved_displayed_theta: list = []
     additional_motor_1_list: list = []
     additional_motor_2_list: list = []
     additional_motors_mode_list: list = []
@@ -122,7 +124,7 @@ def run(image: Optional[np.ndarray] = None):
                     )
                 cv2.putText(
                     image,
-                    str(saved_theta[i]),
+                    str(saved_displayed_theta[i]),
                     (int(saved_boxes[i][0][0]), int(saved_boxes[i][0][1])),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
@@ -226,7 +228,7 @@ def run(image: Optional[np.ndarray] = None):
         cv2.polylines(image, [rotated_box.astype(int)], True, (0, 255, 0), 2)
         cv2.putText(
             image,
-            str(-theta) if gyro_positive_direction else str(theta),
+            str(-displayed_theta) if gyro_positive_direction else str(displayed_theta),
             (int(rotated_box[0][0]), int(rotated_box[0][1])),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.5,
@@ -298,8 +300,10 @@ def run(image: Optional[np.ndarray] = None):
             break
         elif key == ord(","):
             theta += detla_theta
+            displayed_theta += detla_theta
         elif key == ord("."):
             theta -= detla_theta
+            displayed_theta -= detla_theta
         elif key == ord("a"):
             robot_top_left_corner[0] -= delta_pixels
         elif key == ord("d"):
@@ -311,6 +315,9 @@ def run(image: Optional[np.ndarray] = None):
         elif key == ord("p"):
             saved_boxes.append(rotated_box)
             saved_theta.append(-theta if gyro_positive_direction else theta)
+            saved_displayed_theta.append(
+                -displayed_theta if gyro_positive_direction else displayed_theta
+            )
             additional_motor_1_list.append(additional_motor_1)
             additional_motor_2_list.append(additional_motor_2)
             additional_motors_mode_list.append(additional_motors_mode)
@@ -335,12 +342,14 @@ def run(image: Optional[np.ndarray] = None):
         elif key == ord("n"):
             if speed_dps > 0:
                 speed_dps -= speed_steps
+        elif key == ord("y"):
+            displayed_theta = 0
 
     cv2.destroyAllWindows()
 
     return (
         saved_boxes,
-        saved_theta,
+        saved_displayed_theta,
         additional_motor_1_list,
         additional_motor_2_list,
         additional_motors_mode_list,
