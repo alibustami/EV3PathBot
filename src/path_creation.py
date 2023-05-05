@@ -48,6 +48,8 @@ def create_path(
         motor_2 = "X"
     else:
         motor_1 = motor_2 = "X"
+
+    directions = determine_robot_movement(robot_positions, angles)
     positions: dict = {
         "x": [],
         "y": [],
@@ -58,7 +60,9 @@ def create_path(
         motor_2: [],
         "additional_motors_mode": [],
         "speed": [],
+        "action": directions,
     }
+
     for i in range(len(robot_positions)):
         positions["x"].append(int(robot_positions[i][0][0]))
         positions["y"].append(int(robot_positions[i][0][1]))
@@ -89,7 +93,7 @@ def create_path(
     return positions
 
 
-def determine_robot_movement(robot_positions: List[np.ndarray], angles: List[int]) -> namedtuple:
+def determine_robot_movement(robot_positions: List[np.ndarray], angles: List[int]) -> List[str]:
     """Detemine the robot movement direction.
 
     Parameters
@@ -101,8 +105,8 @@ def determine_robot_movement(robot_positions: List[np.ndarray], angles: List[int
 
     Returns
     -------
-    namedtuple
-        robot vectors
+    List[str]
+        movement direction
     """
     robot_vector = namedtuple("robot_vector", ["top_left_corner", "forward_angle", "action"])
     vectors_list: List[robot_vector] = []
@@ -138,4 +142,22 @@ def determine_robot_movement(robot_positions: List[np.ndarray], angles: List[int
             else:
                 vectors_list[i] = vectors_list[i]._replace(action="backward")
 
-    return vectors_list
+    return [vector.action for vector in vectors_list]
+
+
+if __name__ == "__main__":
+    robot_positions = [
+        [[30.0, 626.0], [189.0, 626.0], [189.0, 785.0], [30.0, 785.0]],
+        [[30.0, 531.0], [189.0, 531.0], [189.0, 690.0], [30.0, 690.0]],
+        [[109.5, 498.07002179], [221.92997821, 610.5], [109.5, 722.92997821], [-2.92997821, 610.5]],
+        [[169.5, 438.07002179], [281.92997821, 550.5], [169.5, 662.92997821], [57.07002179, 550.5]],
+        [[249.0, 471.0], [249.0, 630.0], [90.0, 630.0], [90.0, 471.0]],
+        [[299.0, 471.0], [299.0, 630.0], [140.0, 630.0], [140.0, 471.0]],
+        [[269.0, 471.0], [269.0, 630.0], [110.0, 630.0], [110.0, 471.0]],
+    ]
+    angles = [0, 0, 45, 45, 90, 90, 90]
+    determine_robot_movement(robot_positions, angles)
+    # create_path(
+    #     robot_positions,
+    #     angles,
+    # )
