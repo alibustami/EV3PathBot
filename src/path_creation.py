@@ -134,8 +134,11 @@ def determine_robot_movement(robot_positions: List[np.ndarray], angles: List[int
         if abs(vectors_list[i].forward_angle - vectors_list[i - 1].forward_angle) < 2:
             rotation = Rotation.from_euler("z", vectors_list[i - 1].forward_angle, degrees=True)
 
-            step_before = rotation.apply(vectors_list[i - 1].top_left_corner + [0])
-            step_after = rotation.apply(vectors_list[i].top_left_corner + [0])
+            before_array = np.append(vectors_list[i - 1].top_left_corner, [0])
+            after_array = np.append(vectors_list[i].top_left_corner, [0])
+
+            step_before = rotation.apply(before_array)
+            step_after = rotation.apply(after_array)
 
             if step_before[0] < step_after[0]:
                 vectors_list[i] = vectors_list[i]._replace(action="forward")
