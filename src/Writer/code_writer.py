@@ -185,7 +185,11 @@ print({self.gyro}.angle)
                 block = True
             elif points["additional_motors_mode"][i] == "P":
                 block = False
+
             if i <= (len(points["angles_difference"]) - 1):
+                if points["action"][i] == "backward":
+                    points["distance_degrees"][i] = -1 * points["distance_degrees"][i]
+
                 if points["angles_difference"][i] == 0:
                     main_code += f"""
 on_for_degrees_with_correction(speed={points['speed'][i]}, degrees={points['distance_degrees'][i]}, brake=True, block={block}, kp={get_config("pid_constants.kp")})

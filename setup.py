@@ -10,6 +10,7 @@ REQUIREMENTS = [
     "pynput",
     "pydantic",
     "python-ev3dev2",
+    "scipy",
 ]
 
 DEV_REQUIREMENTS = [
