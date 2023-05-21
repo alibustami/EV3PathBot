@@ -1,8 +1,10 @@
 """This module contains the path creation code."""
 import math
+from collections import namedtuple
 from typing import List
 
 import numpy as np
+from scipy.spatial.transform import Rotation
 
 from src.motors_extraction import motors_extraction
 from src.pixels_to_degrees_ratio import convert_pixels_to_degrees
@@ -46,6 +48,8 @@ def create_path(
         motor_2 = "X"
     else:
         motor_1 = motor_2 = "X"
+
+    directions = determine_robot_movement(robot_positions, angles)
     positions: dict = {
         "x": [],
         "y": [],
@@ -56,7 +60,9 @@ def create_path(
         motor_2: [],
         "additional_motors_mode": [],
         "speed": [],
+        "action": directions,
     }
+
     for i in range(len(robot_positions)):
         positions["x"].append(int(robot_positions[i][0][0]))
         positions["y"].append(int(robot_positions[i][0][1]))
@@ -85,3 +91,58 @@ def create_path(
         np.array(positions["distance_degrees"])
     )
     return positions
+
+
+def determine_robot_movement(robot_positions: List[np.ndarray], angles: List[int]) -> List[str]:
+    """Detemine the robot movement direction.
+
+    Parameters
+    ----------
+    robot_positions : List[np.ndarray]
+        robot position as a numpy array representing the edges
+    angles : List[int]
+        step angle
+
+    Returns
+    -------
+    List[str]
+        movement direction
+    """
+    robot_vector = namedtuple("robot_vector", ["top_left_corner", "forward_angle", "action"])
+    vectors_list: List[robot_vector] = []
+    dx = robot_positions[0][3][0] - robot_positions[0][0][0]
+    dy = robot_positions[0][3][1] - robot_positions[0][0][1]
+    try:
+        forward_angle = math.degrees(math.atan(-dy / dx))
+    except Exception:
+        forward_angle = 90 if dy > 0 else -90
+    mode = "None"
+    vector = robot_vector(robot_positions[0][0], int(forward_angle), mode)
+    vectors_list.append(vector)
+    for i in range(1, len(robot_positions)):
+        dx = robot_positions[i][3][0] - robot_positions[i][0][0]
+        dy = robot_positions[i][3][1] - robot_positions[i][0][1]
+        try:
+            forward_angle = math.degrees(math.atan(-dy / dx))
+        except Exception:
+            forward_angle = 90 if dy > 0 else -90
+        mode = "Move" if angles[i] == angles[i - 1] else "Rotate"
+        vector = robot_vector(robot_positions[i][0], int(forward_angle), mode)
+        vectors_list.append(vector)
+
+    for i in range(1, len(vectors_list)):
+        if abs(vectors_list[i].forward_angle - vectors_list[i - 1].forward_angle) < 2:
+            rotation = Rotation.from_euler("z", vectors_list[i - 1].forward_angle, degrees=True)
+
+            before_array = np.append(vectors_list[i - 1].top_left_corner, [0])
+            after_array = np.append(vectors_list[i].top_left_corner, [0])
+
+            step_before = rotation.apply(before_array)
+            step_after = rotation.apply(after_array)
+
+            if step_before[0] < step_after[0]:
+                vectors_list[i] = vectors_list[i]._replace(action="forward")
+            else:
+                vectors_list[i] = vectors_list[i]._replace(action="backward")
+
+    return [vector.action for vector in vectors_list]

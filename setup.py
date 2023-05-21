@@ -1,28 +1,8 @@
 """This module contains the package information."""
 from setuptools import setup
 
-REQUIREMENTS = [
-    "opencv-contrib-python",
-    "numpy",
-    "tk",
-    "pillow",
-    "pyautogui",
-    "pynput",
-    "pydantic",
-    "python-ev3dev2",
-]
-
-DEV_REQUIREMENTS = [
-    "PyYAML",
-    "pre-commit",
-    "black",
-    "flake8",
-    "flake8-docstrings",
-    "isort",
-    "pep8-naming",
-]
-
-TEST_PACKAGES = ["unittest"]
+with open("requirements.txt") as f:
+    REQUIREMENTS = f.read().splitlines()
 
 setup(
     name="EV3PathBOT",
@@ -32,11 +12,7 @@ setup(
     author_email=["alialbustami@gmail.com", "waleedabublan@gmail.com", "hazem.albtoush@gmail.com"],
     python_requires=">=3.8",
     packages=["src"],
-    install_requires=REQUIREMENTS + DEV_REQUIREMENTS,
-    extras_require={
-        "dev": DEV_REQUIREMENTS + TEST_PACKAGES,
-        "test": TEST_PACKAGES,
-    },
+    install_requires=REQUIREMENTS,
     license="MIT",
     include_package_data=True,
 )
