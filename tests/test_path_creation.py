@@ -50,6 +50,7 @@ class TestPathCreation(unittest.TestCase):
             "angle": [0, 0, 90, 90, 201, 201],
             "A": [0, -100, 0, 110, 0, 0],
             "D": [0, 0, 0, 0, 0, 0],
+            "action": ["None", "backward", "Rotate", "forward", "Rotate", "backward"],
             "additional_motors_mode": ["P", "P", "P", "S", "S", "S"],
             "angles_difference": [0, 90, 0, 111, 0],
             "distance_degrees": [945, 476, 779, 556, 833],
