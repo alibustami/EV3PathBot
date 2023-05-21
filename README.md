@@ -155,7 +155,7 @@ Each time you run the `EV3PathBot` package, it will generate a new script with a
 The `EV3PathBot` package uses a `PID` controller to control the robot movement. The `PID` controller is a closed-loop control system that uses the current error, the integral of the error, and the derivative of the error to calculate the output.
 
 The control function is:
-$u(t) = K_pe(t) + K_i \int_0^\infty e(\tau)d\tau + K_d\frac{de(t)}{d(t)}$
+$u(t) = K_pe(t) + K_i \int_0^t e(\tau)d\tau + K_d\frac{de(t)}{d(t)}$
 
 where:
 - $K_p$ is the proportional constant
