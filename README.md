@@ -168,19 +168,19 @@ where:
 
 ## ✍️ Authors
 
-- Ali Albustami [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alibustami/) [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+- Ali Albustami [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/alibustami/) [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
 )](https://github.com/alibustami)
 
-- Waleed Abu Blan [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/waleed-abublan-5a2401248/) [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+- Waleed Abu Blan [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/waleed-abublan-5a2401248/) [![GitHub](assets/github.png
 )](https://github.com/abublan243)
 
-- Hazem Al Btoush [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+- Hazem Al Btoush [![GitHub](assets/github.png
 )](https://github.com/hazem1488)
 
 
 ## 🙌 Acknowledgments
 
-Big thanks to Zaid Ghazal [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/zaid-ghazal/) for sharing his knowledge and experience with us.
+Big thanks to Zaid Ghazal [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/zaid-ghazal/) for sharing his knowledge and experience with us.
 
 ## Contributing
 
@@ -195,4 +195,4 @@ To contribute to `EV3PathBot`, follow these steps:
 
 ## Contact
 
-If you want to contact me you can reach me at my LinkedIn Account [![LinkedIn](	https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alibustami/)
+If you want to contact me you can reach me at my LinkedIn Account [![LinkedIn](	assets/linkedin.png)](https://www.linkedin.com/in/alibustami/)
