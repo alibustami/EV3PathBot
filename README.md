@@ -168,7 +168,7 @@ where:
 
 ## ✍️ Authors
 
-- Ali Albustami [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/alibustami/) [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
+- Ali Albustami [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/alibustami/) [![GitHub](assets/github.png
 )](https://github.com/alibustami)
 
 - Waleed Abu Blan [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/waleed-abublan-5a2401248/) [![GitHub](assets/github.png
