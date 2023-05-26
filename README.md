@@ -155,7 +155,7 @@ Each time you run the `EV3PathBot` package, it will generate a new script with a
 The `EV3PathBot` package uses a `PID` controller to control the robot movement. The `PID` controller is a closed-loop control system that uses the current error, the integral of the error, and the derivative of the error to calculate the output.
 
 The control function is:
-$u(t) = K_pe(t) + K_i \int_0^\infty e(\tau)d\tau + K_d\frac{de(t)}{d(t)}$
+$u(t) = K_pe(t) + K_i \int_0^t e(\tau)d\tau + K_d\frac{de(t)}{d(t)}$
 
 where:
 - $K_p$ is the proportional constant
@@ -168,16 +168,19 @@ where:
 
 ## ✍️ Authors
 
-- Ali Albustami [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alibustami/) [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/alibustami)
+- Ali Albustami [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/alibustami/) [![GitHub](assets/github.png
+)](https://github.com/alibustami)
 
-- Waleed Abu Blan [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/waleed-abublan-5a2401248/) [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/abublan243)
+- Waleed Abu Blan [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/waleed-abublan-5a2401248/) [![GitHub](assets/github.png
+)](https://github.com/abublan243)
 
-- Hazem Al Btoush [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/hazem1488)
+- Hazem Al Btoush [![GitHub](assets/github.png
+)](https://github.com/hazem1488)
 
 
 ## 🙌 Acknowledgments
 
-Big thanks to Zaid Ghazal [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/zaid-ghazal/) for sharing his knowledge and experience with us.
+Big thanks to Zaid Ghazal [![LinkedIn](assets/linkedin.png)](https://www.linkedin.com/in/zaid-ghazal/) for sharing his knowledge and experience with us.
 
 ## Contributing
 
@@ -192,4 +195,4 @@ To contribute to `EV3PathBot`, follow these steps:
 
 ## Contact
 
-If you want to contact me you can reach me at my LinkedIn Account [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alibustami/)
+If you want to contact me you can reach me at my LinkedIn Account [![LinkedIn](	assets/linkedin.png)](https://www.linkedin.com/in/alibustami/)
